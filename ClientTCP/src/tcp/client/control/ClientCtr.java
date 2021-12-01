@@ -238,6 +238,10 @@ public class ClientCtr {
                                 ((HomeFrm) form).receiveDataProcessing(data);
                                 
                                 break;
+//                            case ObjectWrapper.REPLY_TEST_SEND_TETRISBLOCK:
+//                                ((HomeFrm) form).receiveDataProcessing(data);
+//                                
+//                                break;
                         }
 
                         for (ObjectWrapper funtionActive : myFuntion) {

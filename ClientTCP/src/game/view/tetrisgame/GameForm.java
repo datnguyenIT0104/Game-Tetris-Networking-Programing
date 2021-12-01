@@ -35,7 +35,20 @@ public class GameForm extends JFrame {
     private GameThread gameThread;
     private int score;
     private long timeAlive;
-
+    /*
+    Những phần cần chuyển sang server
+    1. Backgroud: khối đứng yên
+    2. totalTime: thời gian chơi còn lại
+    3. distance: khoảng thời gian đã chơi
+    4. score: điểm
+    5. Level: cấp độ hiện tại
+    6. pause: thơi gian delay 1 khối khi rơi xuống
+    7. index: thứ tự của khối đang rơi xuống
+    8. tất cả các thuộc tính trong tetrisblock
+    
+    
+    
+    */
     public GameForm(ClientCtr myControl, Match myMatch, User myAccount) {
         initComponents();
         this.myControl = myControl;
@@ -287,7 +300,7 @@ public class GameForm extends JFrame {
         );
         jpnGameAreaPlaceholderLayout.setVerticalGroup(
             jpnGameAreaPlaceholderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 358, Short.MAX_VALUE)
+            .addGap(0, 398, Short.MAX_VALUE)
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -372,7 +385,7 @@ public class GameForm extends JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(189, 189, 189)
                 .addComponent(jLabel1)
-                .addContainerGap(183, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jpnGameAreaPlaceholder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

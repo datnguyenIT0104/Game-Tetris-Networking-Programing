@@ -36,9 +36,9 @@ import tcp.client.view.tournament.PlayInTournamentFrm;
  * @author DatIT
  */
 public class HomeFrm extends javax.swing.JFrame {
-
-    private ClientCtr myControl;
     
+    private ClientCtr myControl;
+
     // data hide
     private ArrayList<Ranking> listRankings;
     private ArrayList<Group> listGroupsJoined;
@@ -47,14 +47,14 @@ public class HomeFrm extends javax.swing.JFrame {
     private User myAccount;
     private PlayInGroupFrm playInGroupFrm;
     // data hide
-    
+
     //model
     private DefaultTableModel modelRanking;
     private DefaultTableModel modelGroupsJoined;
     private DefaultTableModel modelFriend;
     private DefaultTableModel modelFriendRequest;
-
-    public HomeFrm(ClientCtr myControl, User myAccount, ArrayList<User> listUsersOnline){
+    
+    public HomeFrm(ClientCtr myControl, User myAccount, ArrayList<User> listUsersOnline) {
         initComponents();
         this.myControl = myControl;
         this.myAccount = myAccount;
@@ -63,14 +63,14 @@ public class HomeFrm extends javax.swing.JFrame {
         listRankings = new ArrayList<>();
         listGroupsJoined = new ArrayList<>();
         listFriendRequest = new ArrayList<>();
-        
+
         // khoi tao form group
         playInGroupFrm = null;
         // khoi tao cac bang va danh sach
         initForm();
         // khoi tao gia tri bang
         getDataFromServer();
-        
+
         // khoi tao thong tin ca nhan
         setProperties();
         
@@ -80,15 +80,16 @@ public class HomeFrm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
-    private void initForm(){
+
+    private void initForm() {
         initRanking();
         initFriend();
         initFriendRequest();
         initGroupJoined();
     }
     
-    private void initRanking(){
-        modelRanking = new DefaultTableModel(){
+    private void initRanking() {
+        modelRanking = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -99,11 +100,11 @@ public class HomeFrm extends javax.swing.JFrame {
             "TOP", "USERNAME", "WIN RATE", "STATUS"
         });
         
-        
         tblRanking.setModel(modelRanking);
     }
-    private void initFriend(){
-        modelFriend = new DefaultTableModel(){
+
+    private void initFriend() {
+        modelFriend = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -111,12 +112,13 @@ public class HomeFrm extends javax.swing.JFrame {
             
         };
         modelFriend.setColumnIdentifiers(new Object[]{
-            "USERNAME","TOP"
+            "USERNAME", "TOP"
         });
         tblFriend.setModel(modelFriend);
     }
-    private void initFriendRequest(){
-        modelFriendRequest = new DefaultTableModel(){
+
+    private void initFriendRequest() {
+        modelFriendRequest = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -124,12 +126,13 @@ public class HomeFrm extends javax.swing.JFrame {
             
         };
         modelFriendRequest.setColumnIdentifiers(new Object[]{
-            "USERNAME","TOP"
+            "USERNAME", "TOP"
         });
         tblFriendRequest.setModel(modelFriendRequest);
     }
-    private void initGroupJoined(){
-        modelGroupsJoined = new DefaultTableModel(){
+
+    private void initGroupJoined() {
+        modelGroupsJoined = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -151,7 +154,7 @@ public class HomeFrm extends javax.swing.JFrame {
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_LIST_REQUEST_FRIEND, "GetListRequest"));
     }
     
-    public void getGroupJoined(){
+    public void getGroupJoined() {
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GROUP_JOINED, myAccount));
         
     }
@@ -165,27 +168,32 @@ public class HomeFrm extends javax.swing.JFrame {
             String status = "";
 //            User uTemp = new User(rank.getId(), rank.getUsername(), rank.getName(), rank.getEmail(), rank.getBirthday(), rank.getRole(), rank.isIsBanned());
             for (User user : listUsersOnline) {
-                if( rank.getUsername().equals( user.getUsername())){
-                    if( user.getStatus() == User.ONLINE) status = "online";
-                    else if( user.getStatus() == User.OFFLINE) status = "offline";
-                    else status = "playing";
+                if (rank.getUsername().equals(user.getUsername())) {
+                    if (user.getStatus() == User.ONLINE) {
+                        status = "online";
+                    } else if (user.getStatus() == User.OFFLINE) {
+                        status = "offline";
+                    } else {
+                        status = "playing";
+                    }
                     break;
                 }
             }            
             modelRanking.addRow(new Object[]{
-                index++, rank.getUsername(), rank.getWinRate()+"%",  status
+                index++, rank.getUsername(), rank.getWinRate() + "%", status
             });
         }
-
+        
         modelRanking.fireTableDataChanged();
     }
-    public void fillFriend(){
+
+    public void fillFriend() {
         modelFriend.setRowCount(0);
         for (Friend friend : myAccount.getListFriend()) {
             int rank = 0;
             int index = 1;
             for (Ranking item : listRankings) {
-                if( friend.getId() == item.getId()){
+                if (friend.getId() == item.getId()) {
                     rank = index;
                     break;
                 }
@@ -196,7 +204,8 @@ public class HomeFrm extends javax.swing.JFrame {
             });
         }
     }
-    public void fillGroupJoined(){
+
+    public void fillGroupJoined() {
         modelGroupsJoined.setRowCount(0);
         int index = 1;
         for (Group g : listGroupsJoined) {
@@ -207,7 +216,7 @@ public class HomeFrm extends javax.swing.JFrame {
         modelGroupsJoined.fireTableDataChanged();
     }
     
-    public void fillRequestFriend(){
+    public void fillRequestFriend() {
         // yeu cau ket ban
         modelFriendRequest.setRowCount(0);
         tblFriendRequest.removeAll();
@@ -215,10 +224,10 @@ public class HomeFrm extends javax.swing.JFrame {
             
             User user = listFriendRequest.get(j);
             Friend friend = user.getListFriend().get(0);                        // them danh sach ban be
-            if( friend.getId() == myAccount.getId() && friend.getPerformative() == Friend.HAS_NOT_REPLIED_YET){
+            if (friend.getId() == myAccount.getId() && friend.getPerformative() == Friend.HAS_NOT_REPLIED_YET) {
                 int rank = 1;
                 for (Ranking r : listRankings) {
-                    if( r.getId() == user.getId()){
+                    if (r.getId() == user.getId()) {
                         
                         break;
                     }
@@ -229,7 +238,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 });
             }
             //dong y ket ban
-            if( user.getId() == myAccount.getId() && friend.getPerformative() == Friend.ACCEPT){
+            if (user.getId() == myAccount.getId() && friend.getPerformative() == Friend.ACCEPT) {
                 
                 listFriendRequest.remove(j);
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.REMOVE_REQUEST_FRIEND, listFriendRequest));
@@ -238,42 +247,41 @@ public class HomeFrm extends javax.swing.JFrame {
                 boolean isExist = false;
                 for (int i = 0; i < myAccount.getListFriend().size(); i++) {
                     Friend f = myAccount.getListFriend().get(i);
-                    if( f.getId() == friend.getId()){
+                    if (f.getId() == friend.getId()) {
                         isExist = true;
                         break;
                     }
                 }
-                if( !isExist){
+                if (!isExist) {
                     myAccount.getListFriend().add(friend);
                     fillFriend();
                 }
             }
         }
         modelFriendRequest.fireTableDataChanged();
-        
-        
-                
+
         // từ chối kb
     }
     
-    public void updateStatus(){
+    public void updateStatus() {
         fillRanking();
         fillFriend();
         fillGroupJoined();
         fillRequestFriend();
     }
     
-    private void setProperties(){
+    private void setProperties() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         labName.setText(myAccount.getName());
         labUsername.setText(myAccount.getUsername());
         labRole.setText(myAccount.getRole());
-        labBirthday.setText(sdf.format( myAccount.getBirthday()));
-        if( myAccount.getRole().equalsIgnoreCase("player"))
+        labBirthday.setText(sdf.format(myAccount.getBirthday()));
+        if (myAccount.getRole().equalsIgnoreCase("player")) {
             menuManageGame.hide();
+        }
     }
     
-    public void receiveDataProcessing(ObjectWrapper ow){
+    public void receiveDataProcessing(ObjectWrapper ow) {
         switch (ow.getPerformative()) {
             case ObjectWrapper.REPLY_RANKING:
                 setListRankings((ArrayList<Ranking>) ow.getData());
@@ -296,24 +304,26 @@ public class HomeFrm extends javax.swing.JFrame {
             case ObjectWrapper.REPLY_GET_LIST_REQUEST_FRIEND:
                 listFriendRequest = (ArrayList<User>) ow.getData();
                 fillRequestFriend();
-                break;   
+                break;            
             case ObjectWrapper.REPLY_ACCEPT_REQUEST_FRIEND:
-                if( ow.getData() instanceof User){
+                if (ow.getData() instanceof User) {
                     
                     User newFU = (User) ow.getData();
                     Friend newFriend = new Friend();
-                    newFriend.setId( newFU.getId());
-                    newFriend.setUsername( newFU.getUsername());
+                    newFriend.setId(newFU.getId());
+                    newFriend.setUsername(newFU.getUsername());
                     newFriend.setName(newFU.getName());
                     newFriend.setBirthday(newFU.getBirthday());
                     newFriend.setRole(newFU.getRole());
                     newFriend.setEmail(newFU.getEmail());
                     
-                    myAccount.getListFriend().add( newFriend);
+                    myAccount.getListFriend().add(newFriend);
                     fillFriend();
                     JOptionPane.showMessageDialog(this, "You and " + newFriend.getUsername() + " have become friend ^^");
                     
-                }else JOptionPane.showMessageDialog(this, "Error");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error");
+                }
                 break;
             case ObjectWrapper.REPLY_REMOVE_REQUEST_FRIEND:
                 
@@ -321,16 +331,18 @@ public class HomeFrm extends javax.swing.JFrame {
             case ObjectWrapper.REPLY_REJECT_REQUEST_FRIEND:
                 break;
             case ObjectWrapper.REPLY_UNFRIEND:
-                if( ow.getData() instanceof Friend){
+                if (ow.getData() instanceof Friend) {
                     Friend deleteF = (Friend) ow.getData();
                     for (Friend friend : myAccount.getListFriend()) {
-                        if( friend.getId() == deleteF.getId()){
+                        if (friend.getId() == deleteF.getId()) {
                             myAccount.getListFriend().remove(friend);
                             break;
                         }
                     }
                     fillFriend();
-                }else JOptionPane.showMessageDialog(this, "Fail when unfriend");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Fail when unfriend");
+                }
                 
                 break;
             case ObjectWrapper.SERVER_INFORM_UNFRIEND:
@@ -346,7 +358,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 
                 break;
             case ObjectWrapper.SERVER_SEND_ACCEPT_CHALLENGE_COMMUNICATE:// phia nguoi gui loi thach dau
-                
+
 //                myControl.sendData(new ObjectWrapper(ObjectWrapper.CHANGE_STATUS, User.PLAYING));
 //                Match match1 = (Match) ow.getData();
                 new GameForm(myControl, ((Match) ow.getData()), myAccount).setVisible(true);
@@ -355,17 +367,17 @@ public class HomeFrm extends javax.swing.JFrame {
                 break;
             case ObjectWrapper.SERVER_INFORM_RESULT_MATCH:
 //                Match m = (Match) ow.getData();
-                if( ((Match) ow.getData()).getListResult().get(0).getOutcome() == 1){
+                if (((Match) ow.getData()).getListResult().get(0).getOutcome() == 1) {
                     new ResultMatchFrm(((Match) ow.getData()).getListResult().get(0), ((Match) ow.getData()).getListResult().get(1)).setVisible(true);
-
-                }else{
+                    
+                } else {
                     new ResultMatchFrm(((Match) ow.getData()).getListResult().get(1), ((Match) ow.getData()).getListResult().get(0)).setVisible(true);
-
+                    
                 }
-                if( ((Match)ow.getData()).getGroup() == null)
+                if (((Match) ow.getData()).getGroup() == null) {
                     this.setVisible(true);
-                else{
-                    initPlayInGroup(((Match)ow.getData()).getGroup());
+                } else {
+                    initPlayInGroup(((Match) ow.getData()).getGroup());
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
@@ -373,7 +385,6 @@ public class HomeFrm extends javax.swing.JFrame {
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_RANK_OF_GROUP, ow.getData()));
                     
                 }
-                    
                 
                 break;
             case ObjectWrapper.SERVER_INFORM_ALL_UPDATE_RANK:
@@ -386,38 +397,44 @@ public class HomeFrm extends javax.swing.JFrame {
                 break;
             case ObjectWrapper.REPLY_LEAVE_GROUP:
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_MEMBER_OF_GROUP, ow.getData()));
-
+                
                 break;
             case ObjectWrapper.SERVER_INFORM_UPDATE_GROUP:
 //                 neu nhom dang xuat hien bi tac dong thi se cap nhat lai table
-                if( playInGroupFrm == null)
+                if (playInGroupFrm == null) {
                     return;
-                if( playInGroupFrm.getMyGroup().getId() == ((Group)ow.getData()).getId() &&
-                        playInGroupFrm.isVisible())
+                }
+                if (playInGroupFrm.getMyGroup().getId() == ((Group) ow.getData()).getId()
+                        && playInGroupFrm.isVisible()) {
                     playInGroupFrm.initTable();
+                }
                 System.out.println("udate group");
                 break;
             case ObjectWrapper.SERVER_INFORM_MESSAGE_OF_GROUP:
                 
-                if( playInGroupFrm == null)
+                if (playInGroupFrm == null) {
                     return;
-                if( playInGroupFrm.getMyGroup().getId() == ((Group)ow.getData()).getId() &&
-                        playInGroupFrm.isVisible())
-                    playInGroupFrm.updateBoard( ((Group)ow.getData()).getMessage());
+                }
+                if (playInGroupFrm.getMyGroup().getId() == ((Group) ow.getData()).getId()
+                        && playInGroupFrm.isVisible()) {
+                    playInGroupFrm.updateBoard(((Group) ow.getData()).getMessage());
+                }
                 
                 break;
             case ObjectWrapper.REPLY_GET_MESSAGE_OF_GROUP:
-                if( playInGroupFrm == null)
+                if (playInGroupFrm == null) {
                     return;
-                if( playInGroupFrm.isVisible())
+                }
+                if (playInGroupFrm.isVisible()) {
                     playInGroupFrm.updateBoard((String) ow.getData());
-                  
+                }
+                
                 break;
             case ObjectWrapper.REPLY_JOIN_GROUP_BY_INVITATION:
-                if( ow.getData() instanceof Group) {
-
+                if (ow.getData() instanceof Group) {
+                    
                     JOptionPane.showMessageDialog(this, "Join Successfully");
-
+                    
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_GROUP_TO_ALL_CLIENT, "UpdateToAll"));
                     // update thanh vien neu dang o trong nhom
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_MEMBER_OF_GROUP, ow.getData()));
@@ -432,12 +449,18 @@ public class HomeFrm extends javax.swing.JFrame {
                 cpf.receiveMessage();
                 cpf.setVisible(true);
                 break;
+//            case ObjectWrapper.REPLY_TEST_SEND_TETRISBLOCK:
+//                if (ow.getData().equals("ok")) {
+//                    JOptionPane.showMessageDialog(this, "Successfully");
+//                }
+//                break;
         }
     }
-    public void leveaGroup(Group group){
+
+    public void leveaGroup(Group group) {
         for (int i = 0; i < listGroupsJoined.size(); i++) {
             Group g = listGroupsJoined.get(i);
-            if( g.getId() == group.getId()){
+            if (g.getId() == group.getId()) {
                 listGroupsJoined.remove(i);
                 
                 break;
@@ -445,50 +468,51 @@ public class HomeFrm extends javax.swing.JFrame {
         }
         fillGroupJoined();
     }
+
     public ArrayList<User> getListUsersOnline() {
         return listUsersOnline;
     }
+
     public void setListUsersOnline(ArrayList<User> listUsersOnline) {
         this.listUsersOnline = listUsersOnline;
-        
+
         // kiem tra xem co dang choi trong group hay k?
-        if( playInGroupFrm != null){
+        if (playInGroupFrm != null) {
             playInGroupFrm.setListUsersOnline(listUsersOnline);
         }
     }
-
+    
     public ArrayList<Ranking> getListRankings() {
         return listRankings;
     }
-
+    
     public void setListRankings(ArrayList<Ranking> listRankings) {
         this.listRankings = listRankings;
     }
-
+    
     public ArrayList<Group> getListGroupsJoined() {
         return listGroupsJoined;
     }
-
+    
     public void setListGroupsJoined(ArrayList<Group> listGroupsJoined) {
         this.listGroupsJoined = listGroupsJoined;
     }
-
+    
     public ArrayList<User> getListFriendRequest() {
         return listFriendRequest;
     }
-
+    
     public void setListFriendRequest(ArrayList<User> listFriendRequest) {
         this.listFriendRequest = listFriendRequest;
     }
-
+    
     public PlayInGroupFrm getPlayInGroupFrm() {
         return playInGroupFrm;
     }
-
+    
     public void setPlayInGroupFrm(PlayInGroupFrm playInGroupFrm) {
         this.playInGroupFrm = playInGroupFrm;
     }
-    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -881,7 +905,7 @@ public class HomeFrm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if( myControl != null){
+        if (myControl != null) {
             
             myControl.closeConnnection();
         }
@@ -891,12 +915,13 @@ public class HomeFrm extends javax.swing.JFrame {
     private void mnuJoinGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuJoinGroupActionPerformed
         ObjectWrapper fun = null;
         for (ObjectWrapper item : myControl.getMyFuntion()) {
-            if( item.getData() instanceof JoinGroupFrm){
+            if (item.getData() instanceof JoinGroupFrm) {
                 fun = item;
             }
         }
-        if( fun != null)
+        if (fun != null) {
             myControl.getMyFuntion().remove(fun);
+        }
         
         JoinGroupFrm jgf = new JoinGroupFrm(myControl, myAccount);
         
@@ -904,7 +929,7 @@ public class HomeFrm extends javax.swing.JFrame {
 
     private void mnuCreateGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuCreateGroupActionPerformed
         for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
-            if( activeFun.getData() instanceof CreateGroupFrm){
+            if (activeFun.getData() instanceof CreateGroupFrm) {
                 ((CreateGroupFrm) activeFun.getData()).setVisible(true);
                 return;
             }
@@ -915,13 +940,13 @@ public class HomeFrm extends javax.swing.JFrame {
 
     private void tblRankingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRankingMouseClicked
         int selected = tblRanking.getSelectedRow();
-        if( selected >= 0){
+        if (selected >= 0) {
             String username = (String) modelRanking.getValueAt(selected, 1);
             for (Ranking rank : listRankings) {
-                if( rank.getUsername().equals(username)){
+                if (rank.getUsername().equals(username)) {
                     
                     for (ObjectWrapper ow : myControl.getMyFuntion()) {
-                        if( ow.getData() instanceof PlayerDetailsFrm){
+                        if (ow.getData() instanceof PlayerDetailsFrm) {
                             PlayerDetailsFrm pdf = (PlayerDetailsFrm) ow.getData();
                             pdf.setMyAccount(myAccount);
                             pdf.setMyControl(myControl);
@@ -938,20 +963,20 @@ public class HomeFrm extends javax.swing.JFrame {
                     break;
                 }
             }
-        
+            
         }
         
     }//GEN-LAST:event_tblRankingMouseClicked
 
     private void tblFriendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblFriendMouseClicked
         int selected = tblFriend.getSelectedRow();
-        if( selected >= 0){
+        if (selected >= 0) {
             String username = (String) modelFriend.getValueAt(selected, 0);
             for (Friend friend : myAccount.getListFriend()) {
-                if( friend.getUsername().equals(username)){
+                if (friend.getUsername().equals(username)) {
                     
                     for (ObjectWrapper ow : myControl.getMyFuntion()) {
-                        if( ow.getData() instanceof PlayerDetailsFrm){
+                        if (ow.getData() instanceof PlayerDetailsFrm) {
                             PlayerDetailsFrm pdf = (PlayerDetailsFrm) ow.getData();
                             pdf.setMyAccount(myAccount);
                             pdf.setMyControl(myControl);
@@ -968,23 +993,25 @@ public class HomeFrm extends javax.swing.JFrame {
                     break;
                 }
             }
-        
+            
         }
     }//GEN-LAST:event_tblFriendMouseClicked
 
     private void tblFriendRequestMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblFriendRequestMouseClicked
         int selected = tblFriendRequest.getSelectedRow();
-        if( selected >= 0){
+        if (selected >= 0) {
             String username = (String) modelFriendRequest.getValueAt(selected, 0);
-            int choice = JOptionPane.showConfirmDialog(this, "Do you want to be friend with " + username+ " ?", "Reply request", JOptionPane.YES_NO_CANCEL_OPTION);
-            if( choice == JOptionPane.CANCEL_OPTION) return;
-            if( choice == JOptionPane.YES_OPTION){
+            int choice = JOptionPane.showConfirmDialog(this, "Do you want to be friend with " + username + " ?", "Reply request", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (choice == JOptionPane.CANCEL_OPTION) {
+                return;
+            }
+            if (choice == JOptionPane.YES_OPTION) {
                 // thay doi trang thai loi yeu cau kb
                 for (int i = 0; i < listFriendRequest.size(); i++) {
                     User user = listFriendRequest.get(i);
-                
+                    
                     Friend friend = user.getListFriend().get(0);
-                    if( user.getUsername().equals(username) && friend.getId() == myAccount.getId()){
+                    if (user.getUsername().equals(username) && friend.getId() == myAccount.getId()) {
                         listFriendRequest.get(i).getListFriend().get(0).setPerformative(Friend.ACCEPT);
                         user.getListFriend().get(0).setPerformative(Friend.ACCEPT);
                         
@@ -994,14 +1021,14 @@ public class HomeFrm extends javax.swing.JFrame {
                     }
                 }
                 
-            }else if( choice == JOptionPane.NO_OPTION){
+            } else if (choice == JOptionPane.NO_OPTION) {
                 for (User user : listFriendRequest) {
                     Friend friend = user.getListFriend().get(0);
-                    if( user.getUsername().equals(username) && friend.getId() == myAccount.getId()){
+                    if (user.getUsername().equals(username) && friend.getId() == myAccount.getId()) {
 //                        user.getListFriend().get(0).setPerformative(Friend.REJEST);
                         listFriendRequest.remove(user);
                         fillRequestFriend();
-                        myControl.sendData(new ObjectWrapper(ObjectWrapper.REJECT_REQUEST_FRIEND , listFriendRequest));
+                        myControl.sendData(new ObjectWrapper(ObjectWrapper.REJECT_REQUEST_FRIEND, listFriendRequest));
                         break;
                     }
                 }
@@ -1011,14 +1038,16 @@ public class HomeFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_tblFriendRequestMouseClicked
 
     private void mnuCreateTournamentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuCreateTournamentActionPerformed
-        if( myAccount.getRole().equalsIgnoreCase("player")) return;
+        if (myAccount.getRole().equalsIgnoreCase("player")) {
+            return;
+        }
         ManagerTournamentFrm mtf = new ManagerTournamentFrm(myControl, myAccount);
         
     }//GEN-LAST:event_mnuCreateTournamentActionPerformed
 
     private void mnuJoinTournamentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuJoinTournamentActionPerformed
         for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
-            if( activeFun.getData() instanceof JoinTournamentFrm){
+            if (activeFun.getData() instanceof JoinTournamentFrm) {
                 ((JoinTournamentFrm) activeFun.getData()).setVisible(true);
                 return;
             }
@@ -1029,7 +1058,7 @@ public class HomeFrm extends javax.swing.JFrame {
     private void mnuRankWithOPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRankWithOPActionPerformed
         
         for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
-            if( activeFun.getData() instanceof RankingWOPlayerFrm){
+            if (activeFun.getData() instanceof RankingWOPlayerFrm) {
                 RankingWOPlayerFrm rf = ((RankingWOPlayerFrm) activeFun.getData());
                 
                 rf.initTable();
@@ -1042,7 +1071,7 @@ public class HomeFrm extends javax.swing.JFrame {
 
     private void mnuRankTotalWinMatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRankTotalWinMatchActionPerformed
         for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
-            if( activeFun.getData() instanceof RankingBTWinMatchFrm){
+            if (activeFun.getData() instanceof RankingBTWinMatchFrm) {
                 RankingBTWinMatchFrm rf = ((RankingBTWinMatchFrm) activeFun.getData());
                 
                 rf.initTable();
@@ -1060,11 +1089,11 @@ public class HomeFrm extends javax.swing.JFrame {
     private void tblGroupsJoinedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblGroupsJoinedMouseClicked
         int selected = tblGroupsJoined.getSelectedRow();
         
-        if( selected >= 0){
+        if (selected >= 0) {
             String nameGroup = (String) modelGroupsJoined.getValueAt(selected, 1);
             Group myGroup = new Group();
             for (Group group : listGroupsJoined) {
-                if( group.getName().equalsIgnoreCase(nameGroup)){
+                if (group.getName().equalsIgnoreCase(nameGroup)) {
                     
                     myGroup.setId(group.getId());
                     myGroup.setName(group.getName());
@@ -1079,13 +1108,14 @@ public class HomeFrm extends javax.swing.JFrame {
     private void mnuInvitationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuInvitationActionPerformed
         ObjectWrapper fun = null;
         for (ObjectWrapper item : myControl.getMyFuntion()) {
-            if( item.getData() instanceof InvitationFrm){
+            if (item.getData() instanceof InvitationFrm) {
                 fun = item;
                 break;
             }
         }
-        if( fun != null)
+        if (fun != null) {
             myControl.getMyFuntion().remove(fun);
+        }
         
         (new InvitationFrm(myControl, myAccount)).setVisible(true);
     }//GEN-LAST:event_mnuInvitationActionPerformed
@@ -1093,24 +1123,25 @@ public class HomeFrm extends javax.swing.JFrame {
     private void mnuModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuModeActionPerformed
         ObjectWrapper fun = null;
         for (ObjectWrapper ow : myControl.getMyFuntion()) {
-            if( ow.getData() instanceof ManageModeFrm){
+            if (ow.getData() instanceof ManageModeFrm) {
                 fun = ow;
                 break;
             }
         }
-        if( fun != null)
+        if (fun != null) {
             myControl.getMyFuntion().remove(fun);
+        }
         
         ManageModeFrm modeFrm = new ManageModeFrm(myControl, myAccount);
         modeFrm.setVisible(true);
     }//GEN-LAST:event_mnuModeActionPerformed
-
+    
     public void initPlayInGroup(Group myGroup) {
         // neu chua hien lan nao se khoi tao
-        if( playInGroupFrm == null){
+        if (playInGroupFrm == null) {
             playInGroupFrm = new PlayInGroupFrm(myControl, myAccount, myGroup);
             this.setVisible(false);
-        }else{
+        } else {
             playInGroupFrm.setMyGroup(myGroup);
             playInGroupFrm.initTable();
             playInGroupFrm.setVisible(true);
@@ -1120,7 +1151,7 @@ public class HomeFrm extends javax.swing.JFrame {
         }
         
     }
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -1166,5 +1197,4 @@ public class HomeFrm extends javax.swing.JFrame {
     private javax.swing.JTable tblRanking;
     // End of variables declaration//GEN-END:variables
 
-    
 }

@@ -700,6 +700,10 @@ public class TCPServerCtr {
                                 
                                 oos.writeObject(receiveDataUDP());
                                 break;
+                            case ObjectWrapper.TEST_SEND_TETRISBLOCK:
+                                System.out.println("Gui du lieu thanh cong");
+                                oos.writeObject(new ObjectWrapper(ObjectWrapper.REPLY_TEST_SEND_TETRISBLOCK, "ok"));
+                                break;
                         }
                         oos.flush();
                     }
@@ -728,6 +732,7 @@ public class TCPServerCtr {
                 this.stop();
             }
             catch (Exception e) {
+                e.printStackTrace();
             }
         }
         public void deleteInvitation(Group group){

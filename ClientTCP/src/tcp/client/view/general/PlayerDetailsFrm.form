@@ -85,7 +85,10 @@
                                   <Component id="btnChatPrivate" min="-2" pref="97" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
-                              <Component id="btnUnfriend" min="-2" pref="85" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="btnUnfriend" pref="85" max="32767" attributes="0"/>
+                                  <Component id="btnTest" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                           <Component id="labRole" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
                       </Group>
@@ -139,6 +142,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnBan" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnChatPrivate" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnTest" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -244,6 +248,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChatPrivateActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnTest">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Test"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTestActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

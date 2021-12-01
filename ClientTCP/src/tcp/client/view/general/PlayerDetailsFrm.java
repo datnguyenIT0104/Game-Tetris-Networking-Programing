@@ -1,5 +1,7 @@
 package tcp.client.view.general;
 
+import game.view.tetrisblocks.JShape;
+import game.view.tetrisgame.TetrisBlock;
 import tcp.client.view.match.ChallengeFrm;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import model.Friend;
 import model.ObjectWrapper;
 import model.Ranking;
 import model.User;
+import model.game.TetrisBlockEncode;
 import tcp.client.control.ClientCtr;
 
 /**
@@ -235,6 +238,7 @@ public class PlayerDetailsFrm extends JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         btnBan = new javax.swing.JButton();
         btnChatPrivate = new javax.swing.JButton();
+        btnTest = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Detail Player");
@@ -294,6 +298,13 @@ public class PlayerDetailsFrm extends JFrame {
             }
         });
 
+        btnTest.setText("Test");
+        btnTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTestActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -343,7 +354,9 @@ public class PlayerDetailsFrm extends JFrame {
                                     .addComponent(btnAddFriend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnChatPrivate, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(51, 51, 51)
-                                .addComponent(btnUnfriend, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnUnfriend, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                    .addComponent(btnTest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(labRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -384,7 +397,8 @@ public class PlayerDetailsFrm extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBan)
-                    .addComponent(btnChatPrivate))
+                    .addComponent(btnChatPrivate)
+                    .addComponent(btnTest))
                 .addContainerGap())
         );
 
@@ -478,6 +492,14 @@ public class PlayerDetailsFrm extends JFrame {
         chatPrivateFrm.setVisible(true);
     }//GEN-LAST:event_btnChatPrivateActionPerformed
 
+    private void btnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestActionPerformed
+        TetrisBlock tetrisBlock = new TetrisBlock(new int[][]{ {1, 1},
+                                                               {1, 1}
+        });
+        TetrisBlockEncode tbe = new TetrisBlockEncode();
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.TEST_SEND_TETRISBLOCK, tetrisBlock));
+    }//GEN-LAST:event_btnTestActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -485,6 +507,7 @@ public class PlayerDetailsFrm extends JFrame {
     private javax.swing.JButton btnBan;
     private javax.swing.JButton btnChallenge;
     private javax.swing.JButton btnChatPrivate;
+    private javax.swing.JButton btnTest;
     private javax.swing.JButton btnUnfriend;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

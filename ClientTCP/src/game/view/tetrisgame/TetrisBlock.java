@@ -2,13 +2,14 @@
 package game.view.tetrisgame;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  *
  * @author DatIT
  */
-public class TetrisBlock {
+public class TetrisBlock implements Serializable{
     private int[][] shape;
     private Color color;
     private int x, y;

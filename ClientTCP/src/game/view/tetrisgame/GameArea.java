@@ -97,9 +97,11 @@ public class GameArea extends JPanel{
     
     public void dropBlock(){// rơi khối
         if(  block == null ) return;
-        while( checkBottom() == true ){
+//        while( checkBottom() == true ){
+//            block.moveDown();
+//        }
+        if(checkBottom())
             block.moveDown();
-        }
         repaint();
     }
     
