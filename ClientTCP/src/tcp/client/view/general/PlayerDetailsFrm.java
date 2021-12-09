@@ -497,7 +497,7 @@ public class PlayerDetailsFrm extends JFrame {
                                                                {1, 1}
         });
         TetrisBlockEncode tbe = new TetrisBlockEncode();
-        myControl.sendData(new ObjectWrapper(ObjectWrapper.TEST_SEND_TETRISBLOCK, tetrisBlock));
+//        myControl.sendData(new ObjectWrapper(ObjectWrapper.TEST_SEND_TETRISBLOCK, tetrisBlock));
     }//GEN-LAST:event_btnTestActionPerformed
 
 

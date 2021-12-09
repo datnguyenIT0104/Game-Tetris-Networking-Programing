@@ -103,8 +103,10 @@ public class ObjectWrapper implements Serializable{
     public static final int REPLY_KICK_OUT_GROUP = 92;
     public static final int ACCESS_MODE = 93;
     public static final int REPLY_ACCESS_MODE = 94;
-    public static final int TEST_SEND_TETRISBLOCK = 95;
-    public static final int REPLY_TEST_SEND_TETRISBLOCK = 96;
+    public static final int CHECK_OUT_GAME_BEFORE = 95;
+    public static final int REPLY_CHECK_OUT_GAME_BEFORE = 96;
+    public static final int SEND_INFOR_ABOUT_PLAYING_GAME = 97;
+    public static final int STATUS_OF_ENEMY = 98;
     
     private int performative;
     private Object data;

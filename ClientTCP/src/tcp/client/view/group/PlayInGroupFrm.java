@@ -47,7 +47,6 @@ public class PlayInGroupFrm extends javax.swing.JFrame {
     }
     
     public void initTable() {
-        // neu chu online thi doi cho den khi online
         
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_INFO_OF_PLAYER_IN_GROUP, myGroup));
         model = (DefaultTableModel) tblMember.getModel();
@@ -487,10 +486,10 @@ public class PlayInGroupFrm extends javax.swing.JFrame {
                 myControl.getMyFuntion().remove(funAc);
             }
 
-            ((HomeFrm) myControl.getForm()).setVisible(true);
+//            ((HomeFrm) myControl.getForm()).setVisible(true);
             ChallengeFrm challengeFrm = new ChallengeFrm(myControl, userSend, myAccount, myGroup);
 
-            this.setVisible(false);
+//            this.setVisible(false);
         }
     }//GEN-LAST:event_btnChallengeActionPerformed
 

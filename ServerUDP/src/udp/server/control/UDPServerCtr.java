@@ -267,9 +267,9 @@ public class UDPServerCtr {
                             break;
                         case ObjectWrapper.GET_MODE:
                             result.setPerformative(ObjectWrapper.REPLY_GET_MODE);
-//                            ArrayList<Mode> listModes = ( new ModeDAO()).getAllMode();
-
-                            result.setData((new ModeDAO()).getAllMode());
+                            ArrayList<Mode> listModes = ( new ModeDAO()).getAllMode();
+//                            System.out.println("List mode: " + listModes.size());
+                            result.setData(listModes);
                             break;
                         case ObjectWrapper.ADD_MATCH:
                             (new MatchDAO()).addMatch((Match) receiveData.getData());
@@ -324,9 +324,7 @@ public class UDPServerCtr {
                             break;
                         case ObjectWrapper.ACCESS_MODE:
                             result.setPerformative(ObjectWrapper.REPLY_ACCESS_MODE);
-                            if ((int) receiveData.getData() == Mode.GET_ALL) {
-                                result.setData((new ModeDAO()).getAllMode());
-                            } else if (receiveData.getData() instanceof Mode) {
+                            if (receiveData.getData() instanceof Mode) {
                                 Mode mode = (Mode) receiveData.getData();
                                 if (mode.getPerformative() == Mode.CREATE) {
                                     if ((new ModeDAO()).createMode((Mode) receiveData.getData())) {
@@ -336,6 +334,8 @@ public class UDPServerCtr {
                                     }
                                 }
 
+                            }else if ((int) receiveData.getData() == Mode.GET_ALL) {
+                                result.setData((new ModeDAO()).getAllMode());
                             }
 
                             break;

@@ -20,14 +20,16 @@ public class GameThreadEncode implements Serializable{
     private int pause = 1000;
     private int speedUpPerLevel = 100;
 
+    private int index;
     public GameThreadEncode() {
     }
 
-    public GameThreadEncode(GameAreaEncode gae, long totalTime, long distance, int score) {
+    public GameThreadEncode(GameAreaEncode gae, long totalTime, long distance, int score, int index) {
         this.gae = gae;
         this.totalTime = totalTime;
         this.distance = distance;
         this.score = score;
+        this.index = index;
     }
 
     public GameAreaEncode getGae() {
@@ -92,6 +94,14 @@ public class GameThreadEncode implements Serializable{
 
     public void setSpeedUpPerLevel(int speedUpPerLevel) {
         this.speedUpPerLevel = speedUpPerLevel;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
     
 }

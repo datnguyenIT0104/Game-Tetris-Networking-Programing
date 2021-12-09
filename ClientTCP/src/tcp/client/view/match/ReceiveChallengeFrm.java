@@ -1,6 +1,7 @@
 package tcp.client.view.match;
 
-import game.view.tetrisgame.GameForm;
+//import drawLine.GameForm;
+import game.view.tetrisgame.GameFormClient;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -9,6 +10,7 @@ import model.ObjectWrapper;
 import model.User;
 import tcp.client.control.ClientCtr;
 import tcp.client.view.general.HomeFrm;
+import tcp.client.view.group.PlayInGroupFrm;
 
 /**
  *
@@ -203,9 +205,13 @@ public class ReceiveChallengeFrm extends JFrame {
         match.setRandomBlock(random);
         myControl.sendData(new ObjectWrapper(ObjectWrapper.ACCEPT_CHALLENGE_COMMUNICATE, match));
         
-        new GameForm(myControl, match, myAccount).setVisible(true);
+//        new GameForm(myControl, match, myAccount).setVisible(true);
+        new GameFormClient(myControl, match, myAccount).setVisible(true);
 
         ((HomeFrm)myControl.getForm()).setVisible(false);
+        if( ((HomeFrm)myControl.getForm()).getPlayInGroupFrm() != null)
+            ((HomeFrm)myControl.getForm()).getPlayInGroupFrm().setVisible(false);
+        
         this.dispose();
     }//GEN-LAST:event_btnAcceptActionPerformed
 

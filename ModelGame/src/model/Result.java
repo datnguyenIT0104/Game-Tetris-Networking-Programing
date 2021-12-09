@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import model.game.GameThreadEncode;
 
 /**
  *
@@ -18,26 +19,36 @@ public class Result implements Serializable{
     private int outcome;
     private User user;
     private long timeAlive;
+    private GameThreadEncode gte;
     
     public Result() {
         outcome = -1;
         
     }
 
-    public Result(int id, int score, int outcome, User user, long timeAlive) {
+    public Result(int id, int score, int outcome, User user, long timeAlive, GameThreadEncode gte) {
         this.id = id;
         this.score = score;
         this.outcome = outcome;
         this.user = user;
         this.timeAlive = timeAlive;
+        this.gte = gte;
     }
-
+    
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public GameThreadEncode getGte() {
+        return gte;
+    }
+
+    public void setGte(GameThreadEncode gte) {
+        this.gte = gte;
     }
 
     public int getScore() {

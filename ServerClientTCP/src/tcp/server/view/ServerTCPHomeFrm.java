@@ -50,6 +50,7 @@ public class ServerTCPHomeFrm extends JFrame {
         txtHost.setText("localhost");
         txtHost.setEnabled(false);
 
+        txpBoardMessage.setEditable(false);
         jScrollPane1.setViewportView(txpBoardMessage);
 
         btnStart.setText("Start Server");

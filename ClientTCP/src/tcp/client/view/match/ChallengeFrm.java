@@ -13,6 +13,7 @@ import model.Result;
 import model.Tournament;
 import model.User;
 import tcp.client.control.ClientCtr;
+import tcp.client.view.general.HomeFrm;
 
 /**
  *
@@ -36,15 +37,15 @@ public class ChallengeFrm extends javax.swing.JFrame {
         this.tournament = null;
         this.group = null;
         
-        initTable();
-        myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_MODE, "GetMode"));
+        
         this.pack();
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         myControl.getMyFuntion().add(new ObjectWrapper(ObjectWrapper.REPLY_GET_MODE, this));
-        
+        initTable();
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_MODE, "GetMode"));
     }
     // choi trong giai dau
     public ChallengeFrm(ClientCtr myControl, User sendUser, User myAccount, Tournament tournament) {
@@ -54,16 +55,15 @@ public class ChallengeFrm extends javax.swing.JFrame {
         this.myAccount = myAccount;
         this.tournament = tournament;
         
-        initTable();
-        myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_MODE, "GetMode"));
-        
         this.pack();
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         
         myControl.getMyFuntion().add(new ObjectWrapper(ObjectWrapper.REPLY_GET_MODE, this));
+        initTable();
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_MODE, "GetMode"));
     }
     // choi trong nhom
     public ChallengeFrm(ClientCtr myControl, User sendUser, User myAccount, Group group) {
@@ -73,16 +73,15 @@ public class ChallengeFrm extends javax.swing.JFrame {
         this.myAccount = myAccount;
         this.group = group;
         
-        initTable();
-        myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_MODE, "GetMode"));
-        
         this.pack();
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         
         myControl.getMyFuntion().add(new ObjectWrapper(ObjectWrapper.REPLY_GET_MODE, this));
+        initTable();
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_MODE, "GetMode"));
     }
     private void initTable(){
         listModes = new ArrayList<>();
@@ -112,6 +111,7 @@ public class ChallengeFrm extends javax.swing.JFrame {
         if( ow.getPerformative() == ObjectWrapper.REPLY_GET_MODE){
             listModes = (ArrayList<Mode>) ow.getData();
             fillTable();
+//            System.out.println("Size of list: " + listModes.size());
         }
         
     }
@@ -147,6 +147,7 @@ public class ChallengeFrm extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblMode = new javax.swing.JTable();
         btnSend = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -162,8 +163,14 @@ public class ChallengeFrm extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Challenger");
 
         jLabel2.setText("Message:");
@@ -201,35 +208,42 @@ public class ChallengeFrm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(98, 98, 98)
+                                .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                            .addComponent(jLabel3)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(122, 122, 122)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(133, 133, 133)
-                        .addComponent(btnSend, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSeparator1))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(13, 13, 13)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnSend)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -275,6 +289,11 @@ public class ChallengeFrm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSendActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+//        ((HomeFrm)myControl.getForm()).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_formWindowClosing
+
     
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -285,6 +304,7 @@ public class ChallengeFrm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable tblMode;
     private javax.swing.JTextArea txaMessage;

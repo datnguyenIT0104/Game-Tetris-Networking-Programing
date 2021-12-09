@@ -1,6 +1,7 @@
 package tcp.client.control;
 
-import game.view.tetrisgame.GameForm;
+//import drawLine.GameForm;
+import game.view.tetrisgame.GameFormClient;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -211,7 +212,9 @@ public class ClientCtr {
                                  
                                 break;      
                             case ObjectWrapper.REPLY_GET_INFO_OF_PLAYER_IN_GROUP:
-                                ( ((HomeFrm) form).getPlayInGroupFrm()).receiveDataProcessing(data);
+                                if(((HomeFrm) form).getPlayInGroupFrm() != null){
+                                    ( ((HomeFrm) form).getPlayInGroupFrm()).receiveDataProcessing(data);
+                                }
 
                                 break;
                             case ObjectWrapper.SERVER_INFORM_MESSAGE_OF_GROUP:
@@ -238,10 +241,14 @@ public class ClientCtr {
                                 ((HomeFrm) form).receiveDataProcessing(data);
                                 
                                 break;
-//                            case ObjectWrapper.REPLY_TEST_SEND_TETRISBLOCK:
-//                                ((HomeFrm) form).receiveDataProcessing(data);
-//                                
-//                                break;
+                            case ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE:
+                                ((HomeFrm) form).receiveDataProcessing(data);
+                                
+                                break;
+                            case ObjectWrapper.STATUS_OF_ENEMY:
+                                ((HomeFrm) form).receiveDataProcessing(data);
+                                
+                                break;
                         }
 
                         for (ObjectWrapper funtionActive : myFuntion) {
@@ -285,6 +292,7 @@ public class ClientCtr {
                                         break;
                                     case ObjectWrapper.REPLY_GET_MODE:
 //                                        removeChallengeFrm();
+//                                        System.out.println("Mode");
                                         ((ChallengeFrm) funtionActive.getData()).receiveDataProcessing(data);
                                         
                                         break;
@@ -293,7 +301,8 @@ public class ClientCtr {
                                         ((ChallengeFrm) funtionActive.getData()).receiveDataProcessing(data);
                                         break;
                                     case ObjectWrapper.SEND_INFO_TO_CLIENT:
-                                        ((GameForm) funtionActive.getData()).receiveDataProcessing(data);
+//                                        ((GameForm) funtionActive.getData()).receiveDataProcessing(data);
+                                        ((GameFormClient) funtionActive.getData()).receiveDataProcessing(data);
 
                                         break;
 
@@ -324,7 +333,7 @@ public class ClientCtr {
                                         
                                         break;
                                 }
-//                                break;
+                                break;
                             }
                         }
 
@@ -342,10 +351,14 @@ public class ClientCtr {
         for (int i = 0; i < myFuntion.size(); i++) {
             JFrame form = (JFrame) myFuntion.get(i).getData();
 
-            if (form instanceof GameForm) {
+            if (form instanceof GameFormClient) {
                 myFuntion.remove(i);
                 break;
             }
+//            if (form instanceof GameForm) {
+//                myFuntion.remove(i);
+//                break;
+//            }
         }
     }
     public void removeChallengeFrm(){

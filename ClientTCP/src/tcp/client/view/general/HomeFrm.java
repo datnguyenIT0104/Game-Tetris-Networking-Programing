@@ -1,12 +1,13 @@
 package tcp.client.view.general;
 
+import game.view.tetrisgame.GameFormClient;
 import tcp.client.view.ranking.RankingWOPlayerFrm;
 import tcp.client.view.tournament.ManagerTournamentFrm;
 import tcp.client.view.tournament.JoinTournamentFrm;
 import tcp.client.view.match.ResultMatchFrm;
 import tcp.client.view.group.JoinGroupFrm;
 import tcp.client.view.group.CreateGroupFrm;
-import game.view.tetrisgame.GameForm;
+//import drawLine.GameForm;
 import java.awt.HeadlessException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class HomeFrm extends javax.swing.JFrame {
 //        this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setVisible(true);
+//        this.setVisible(true);
     }
 
     private void initForm() {
@@ -148,10 +149,12 @@ public class HomeFrm extends javax.swing.JFrame {
     }
     
     private void getDataFromServer() {
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.CHECK_OUT_GAME_BEFORE, myAccount));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.RANKING, "winrate"));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.FRIEND_OF_USER, myAccount));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GROUP_JOINED, myAccount));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_LIST_REQUEST_FRIEND, "GetListRequest"));
+        
     }
     
     public void getGroupJoined() {
@@ -357,23 +360,16 @@ public class HomeFrm extends javax.swing.JFrame {
                 ReceiveChallengeFrm rcf = new ReceiveChallengeFrm(myControl, myAccount, (Match) ow.getData());
                 
                 break;
-            case ObjectWrapper.SERVER_SEND_ACCEPT_CHALLENGE_COMMUNICATE:// phia nguoi gui loi thach dau
+            case ObjectWrapper.SERVER_SEND_ACCEPT_CHALLENGE_COMMUNICATE:// phia nguoi gui loi thach dau bat dau game
 
-//                myControl.sendData(new ObjectWrapper(ObjectWrapper.CHANGE_STATUS, User.PLAYING));
-//                Match match1 = (Match) ow.getData();
-                new GameForm(myControl, ((Match) ow.getData()), myAccount).setVisible(true);
-                
+                new GameFormClient(myControl, ((Match) ow.getData()), myAccount).setVisible(true);
+//                new GameForm(myControl, ((Match) ow.getData()), myAccount).setVisible(true);
+                if( playInGroupFrm != null)
+                    playInGroupFrm.setVisible(false);
                 this.setVisible(false);
                 break;
             case ObjectWrapper.SERVER_INFORM_RESULT_MATCH:
 //                Match m = (Match) ow.getData();
-                if (((Match) ow.getData()).getListResult().get(0).getOutcome() == 1) {
-                    new ResultMatchFrm(((Match) ow.getData()).getListResult().get(0), ((Match) ow.getData()).getListResult().get(1)).setVisible(true);
-                    
-                } else {
-                    new ResultMatchFrm(((Match) ow.getData()).getListResult().get(1), ((Match) ow.getData()).getListResult().get(0)).setVisible(true);
-                    
-                }
                 if (((Match) ow.getData()).getGroup() == null) {
                     this.setVisible(true);
                 } else {
@@ -385,7 +381,13 @@ public class HomeFrm extends javax.swing.JFrame {
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_RANK_OF_GROUP, ow.getData()));
                     
                 }
-                
+                if (((Match) ow.getData()).getListResult().get(0).getOutcome() == 1) {
+                    new ResultMatchFrm(((Match) ow.getData()).getListResult().get(0), ((Match) ow.getData()).getListResult().get(1)).setVisible(true);
+                    
+                } else {
+                    new ResultMatchFrm(((Match) ow.getData()).getListResult().get(1), ((Match) ow.getData()).getListResult().get(0)).setVisible(true);
+                    
+                }
                 break;
             case ObjectWrapper.SERVER_INFORM_ALL_UPDATE_RANK:
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.RANKING, "winrate"));
@@ -454,6 +456,18 @@ public class HomeFrm extends javax.swing.JFrame {
 //                    JOptionPane.showMessageDialog(this, "Successfully");
 //                }
 //                break;
+            case ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE:
+                if( ow.getData() instanceof Match){
+                    GameFormClient gfc = new GameFormClient(myControl, (Match) ow.getData(), myAccount);
+                    gfc.backGame();
+                    this.setVisible(false);
+                }else
+                    this.setVisible(true);
+                
+                break;
+            case ObjectWrapper.STATUS_OF_ENEMY:
+                JOptionPane.showMessageDialog(this, ow.getData());
+                break;
         }
     }
 
