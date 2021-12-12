@@ -37,7 +37,7 @@ public class ModeDAO extends DAO{
         boolean result = false;
         String sql = "UPDATE tblMode"
                 + "   SET speed = ?, time = ?"
-                + "   WHERE id = ?";
+                + "   WHERE name = ?";
         
         try {
             PreparedStatement ps = con.prepareStatement(sql);
@@ -52,7 +52,23 @@ public class ModeDAO extends DAO{
         }
         return result;
     }
-    
+    public boolean deleteMode(Mode mode){
+        boolean result = false;
+        String sql = "DELETE"
+                + "   FROM tblMode"
+                + "   WHERE name = ?;";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, mode.getName());
+            
+            int count = ps.executeUpdate();
+            if( count > 0) result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     public ArrayList<Mode> getAllMode(){
         ArrayList<Mode> result = new ArrayList<>();
         

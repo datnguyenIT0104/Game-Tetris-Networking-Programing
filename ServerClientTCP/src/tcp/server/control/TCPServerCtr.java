@@ -135,6 +135,10 @@ public class TCPServerCtr {
         this.listPlaying = listPlaying;
     }
 
+    public ServerTCPHomeFrm getsHomeF() {
+        return sHomeF;
+    }
+
     class ServerListenning extends Thread {// lắng nghe các client connect đến. sau đó tạo thread riêng để kết nối
 
         public ServerListenning() {
@@ -603,8 +607,7 @@ public class TCPServerCtr {
                                 }
                                 break;
                             case ObjectWrapper.SEND2_RESULT_TO_SERVER:
-                                // kiem tra xem ng choi do thoat game hay k?
-
+                                
                                 // tinh toan ket qua
                                 Match resultM = winlose((Match) data.getData());
 
@@ -780,7 +783,7 @@ public class TCPServerCtr {
 //                                break;
                             case ObjectWrapper.SEND_INFOR_ABOUT_PLAYING_GAME:
                                 restoreGame((Match) data.getData(), userOfPro);
-
+                                sHomeF.fillList(listPlaying);
                                 informStatusOfEnemy((Match) data.getData(), "Your opponent has just exited the game!");
                                 break;
                             case ObjectWrapper.CHECK_OUT_GAME_BEFORE:
@@ -805,6 +808,7 @@ public class TCPServerCtr {
                                             break;
                                         }
                                     }
+                                    sHomeF.fillList(listPlaying);
                                     informStatusOfEnemy(myMatch, "Your opponent is back!");
                                 } else {
                                     oos.writeObject(new ObjectWrapper(ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE,
@@ -903,6 +907,8 @@ public class TCPServerCtr {
                         && match.getPlayTime().equals(myMatch.getPlayTime())) {
 
                     listPlaying.remove(i);
+                    // cap nhat ServerHome
+                    sHomeF.fillList(listPlaying);
                     return true;
                 }
             }
@@ -927,6 +933,8 @@ public class TCPServerCtr {
 
                     match = gfs.receiveDataFromClient(match);
                     listPlaying.remove(i);
+                    // cap nhat ServerHome
+                    sHomeF.fillList(listPlaying);
                     return true;
                 }
             }

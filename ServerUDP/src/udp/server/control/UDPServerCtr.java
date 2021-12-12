@@ -327,11 +327,21 @@ public class UDPServerCtr {
                             if (receiveData.getData() instanceof Mode) {
                                 Mode mode = (Mode) receiveData.getData();
                                 if (mode.getPerformative() == Mode.CREATE) {
-                                    if ((new ModeDAO()).createMode((Mode) receiveData.getData())) {
+                                    if ((new ModeDAO()).createMode(mode)) {
                                         result.setData("Create Successfully");
                                     } else {
-                                        result.setData("false");
+                                        result.setData("False");
                                     }
+                                }else if( mode.getPerformative() == Mode.EDIT){
+                                    if( (new ModeDAO()).updateMode(mode))
+                                        result.setData("Edit successfully");
+                                    else
+                                        result.setData("False");
+                                }else if( mode.getPerformative() == Mode.DELETE){
+                                    if( (new ModeDAO()).deleteMode(mode))
+                                        result.setData("Deleted");
+                                    else
+                                        result.setData("False");
                                 }
 
                             }else if ((int) receiveData.getData() == Mode.GET_ALL) {

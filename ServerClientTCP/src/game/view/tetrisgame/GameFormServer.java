@@ -11,6 +11,7 @@ import model.game.GameAreaEncode;
 import model.game.GameThreadEncode;
 import model.game.TetrisBlockEncode;
 import tcp.server.control.TCPServerCtr;
+import tcp.server.view.ServerTCPHomeFrm;
 
 /**
  *
@@ -32,7 +33,7 @@ public class GameFormServer extends GameForm {
         });
         super.setPropertiesThreadGame();
         // an di gameformserver
-//        this.setVisible(false);
+        this.setVisible(false);
     }
 
     @Override
@@ -82,6 +83,8 @@ public class GameFormServer extends GameForm {
             }
         }
         myControl.getListPlaying().removeAll(listRemove);
+        // cap nhat
+        myControl.getsHomeF().fillList( myControl.getListPlaying());
         return isOut;
     }
     

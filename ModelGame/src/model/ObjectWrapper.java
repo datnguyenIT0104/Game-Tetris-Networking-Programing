@@ -107,6 +107,8 @@ public class ObjectWrapper implements Serializable{
     public static final int REPLY_CHECK_OUT_GAME_BEFORE = 96;
     public static final int SEND_INFOR_ABOUT_PLAYING_GAME = 97;
     public static final int STATUS_OF_ENEMY = 98;
+    public static final int SEND_REPORT_TO_SERVER = 99;
+    public static final int REPLY_SEND_REPORT_TO_SERVER = 100;
     
     private int performative;
     private Object data;

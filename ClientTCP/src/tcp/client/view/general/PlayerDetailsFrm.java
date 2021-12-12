@@ -238,7 +238,7 @@ public class PlayerDetailsFrm extends JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         btnBan = new javax.swing.JButton();
         btnChatPrivate = new javax.swing.JButton();
-        btnTest = new javax.swing.JButton();
+        btnReport = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Detail Player");
@@ -298,10 +298,10 @@ public class PlayerDetailsFrm extends JFrame {
             }
         });
 
-        btnTest.setText("Test");
-        btnTest.addActionListener(new java.awt.event.ActionListener() {
+        btnReport.setText("Report");
+        btnReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestActionPerformed(evt);
+                btnReportActionPerformed(evt);
             }
         });
 
@@ -356,7 +356,7 @@ public class PlayerDetailsFrm extends JFrame {
                                 .addGap(51, 51, 51)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnUnfriend, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                                    .addComponent(btnTest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(btnReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(labRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -398,7 +398,7 @@ public class PlayerDetailsFrm extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBan)
                     .addComponent(btnChatPrivate)
-                    .addComponent(btnTest))
+                    .addComponent(btnReport))
                 .addContainerGap())
         );
 
@@ -478,7 +478,7 @@ public class PlayerDetailsFrm extends JFrame {
         }
         if( funAc != null)
             myControl.getMyFuntion().remove(funAc);
-        // neu van con thi cho no xuat hien
+        
         
         ChallengeFrm cf = new ChallengeFrm(myControl, userSend, myAccount);
         cf.setVisible(true);
@@ -492,13 +492,26 @@ public class PlayerDetailsFrm extends JFrame {
         chatPrivateFrm.setVisible(true);
     }//GEN-LAST:event_btnChatPrivateActionPerformed
 
-    private void btnTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestActionPerformed
-        TetrisBlock tetrisBlock = new TetrisBlock(new int[][]{ {1, 1},
-                                                               {1, 1}
-        });
-        TetrisBlockEncode tbe = new TetrisBlockEncode();
-//        myControl.sendData(new ObjectWrapper(ObjectWrapper.TEST_SEND_TETRISBLOCK, tetrisBlock));
-    }//GEN-LAST:event_btnTestActionPerformed
+    private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
+        String input = JOptionPane.showInputDialog(this, "Enter content", "Report", JOptionPane.QUESTION_MESSAGE);
+        String username = labUsername.getText().trim();
+        Friend f = new Friend();
+        if( username.equals( rank.getUsername())){
+            f.setId(rank.getId());
+            f.setUsername(rank.getUsername());
+            f.setName(rank.getName());
+        }else if( username.equals(friend.getUsername())){
+            f.setId(friend.getId());
+            f.setUsername(friend.getUsername());
+            f.setName(friend.getName());
+        }
+        f.setMessage(input);
+        User user = myAccount;
+        user.getListFriend().add(f);
+        
+        
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.SEND_REPORT_TO_SERVER, user));
+    }//GEN-LAST:event_btnReportActionPerformed
 
 
 
@@ -507,7 +520,7 @@ public class PlayerDetailsFrm extends JFrame {
     private javax.swing.JButton btnBan;
     private javax.swing.JButton btnChallenge;
     private javax.swing.JButton btnChatPrivate;
-    private javax.swing.JButton btnTest;
+    private javax.swing.JButton btnReport;
     private javax.swing.JButton btnUnfriend;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

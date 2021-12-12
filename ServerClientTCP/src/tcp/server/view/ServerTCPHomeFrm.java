@@ -1,8 +1,14 @@
 package tcp.server.view;
 
+import game.view.tetrisgame.GameForm;
+import game.view.tetrisgame.GameFormServer;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import model.IPAddress;
+import model.User;
 import tcp.server.control.TCPServerCtr;
 
 /**
@@ -12,10 +18,13 @@ import tcp.server.control.TCPServerCtr;
 public class ServerTCPHomeFrm extends JFrame {
 
     private TCPServerCtr myControl;
-    
+    private DefaultListModel model;
+    private ArrayList<GameForm> list;
     public ServerTCPHomeFrm() {
         initComponents();
         
+        model = new DefaultListModel();
+//        lisUserOfGame.setModel(model);
         pack();
         setResizable(false);
         setLocationRelativeTo(null);
@@ -36,11 +45,16 @@ public class ServerTCPHomeFrm extends JFrame {
         txpBoardMessage = new javax.swing.JTextPane();
         btnStart = new javax.swing.JButton();
         btnStop = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        btnShow = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lisUserOfGame = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Tetris Game Server TCP");
 
         jLabel2.setText("Server Host:");
@@ -68,6 +82,19 @@ public class ServerTCPHomeFrm extends JFrame {
             }
         });
 
+        jLabel4.setText("Choose Game of User:");
+
+        btnShow.setText("Show Game Form");
+        btnShow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnShowActionPerformed(evt);
+            }
+        });
+
+        lisUserOfGame.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        lisUserOfGame.setSelectionBackground(new java.awt.Color(102, 255, 102));
+        jScrollPane2.setViewportView(lisUserOfGame);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -77,27 +104,27 @@ public class ServerTCPHomeFrm extends JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
                                     .addComponent(jLabel2))
                                 .addGap(51, 51, 51)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(159, 159, 159)
+                                        .addComponent(btnStop))
                                     .addComponent(btnStart)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(txtPort)
-                                        .addComponent(txtHost, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtHost, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(281, 281, 281)
-                                .addComponent(btnStop))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(142, 142, 142)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 117, Short.MAX_VALUE)))
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38)
+                                .addComponent(btnShow))))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -113,13 +140,24 @@ public class ServerTCPHomeFrm extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnStart)
-                    .addComponent(btnStop))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnStart)
+                            .addComponent(btnStop))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(jLabel4))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(252, 252, 252)
+                        .addComponent(btnShow)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -155,6 +193,28 @@ public class ServerTCPHomeFrm extends JFrame {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnStopActionPerformed
+
+    public void fillList(ArrayList<GameForm> list){
+        this.list = list;
+        model.removeAllElements();
+        for (GameForm item : list) {
+            User user = ((GameFormServer)item).getMyAccount();
+            model.addElement(user.getUsername());
+        }
+        lisUserOfGame.setModel(model);
+    }
+    private void btnShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowActionPerformed
+        if( lisUserOfGame.getSelectedIndex() != -1){
+            String username = lisUserOfGame.getSelectedValue();
+            for (GameForm item : list) {
+                User user = ((GameFormServer) item).getMyAccount();
+                if( user.getUsername().equals(username)){
+                    ((GameFormServer)item).setVisible(true);
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_btnShowActionPerformed
     
     public void addMessage(String content){
         String currentMessage = txpBoardMessage.getText();
@@ -199,12 +259,16 @@ public class ServerTCPHomeFrm extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnShow;
     private javax.swing.JButton btnStart;
     private javax.swing.JButton btnStop;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JList<String> lisUserOfGame;
     private javax.swing.JTextPane txpBoardMessage;
     private javax.swing.JTextField txtHost;
     private javax.swing.JTextField txtPort;

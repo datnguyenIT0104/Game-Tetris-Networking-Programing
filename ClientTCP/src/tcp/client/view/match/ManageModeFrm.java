@@ -27,12 +27,12 @@ public class ManageModeFrm extends javax.swing.JFrame {
 
         myControl.getMyFuntion().add(new ObjectWrapper(ObjectWrapper.REPLY_ACCESS_MODE, this));
 
-        initForm(myControl);
+        initForm();
     }
 
-    public void initForm(ClientCtr myControl1) {
+    public void initForm() {
         model = (DefaultTableModel) tblMode.getModel();
-        myControl1.sendData(new ObjectWrapper(ObjectWrapper.ACCESS_MODE, Mode.GET_ALL));
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.ACCESS_MODE, Mode.GET_ALL));
         tblMode.setModel(model);
     }
 
@@ -41,6 +41,9 @@ public class ManageModeFrm extends javax.swing.JFrame {
             list = (ArrayList<Mode>) ow.getData();
 
             fillTable();
+        }else{
+            JOptionPane.showMessageDialog(this, ow.getData());
+            initForm();
         }
     }
 
@@ -73,7 +76,7 @@ public class ManageModeFrm extends javax.swing.JFrame {
         int time = Integer.parseInt(txtTime.getText());
         if (time < 0 || time > 30 || txtTime.getText().equals("")) {
             txtTime.setBackground(Color.red);
-            sb.append("Speed range from 0 to 30\n");
+            sb.append("Time range from 0 to 30\n");
         } else {
             txtTime.setBackground(Color.white);
         }
@@ -151,8 +154,18 @@ public class ManageModeFrm extends javax.swing.JFrame {
         });
 
         btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         btnNew.setText("New");
         btnNew.addActionListener(new java.awt.event.ActionListener() {
@@ -274,6 +287,44 @@ public class ManageModeFrm extends javax.swing.JFrame {
         btnEdit.setEnabled(false);
         btnDelete.setEnabled(false);
     }//GEN-LAST:event_btnNewActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        int selected = tblMode.getSelectedRow();
+        if (selected >= 0) {
+            Mode mode = new Mode();
+            try {
+                if(!checkMode())
+                    return;
+                mode.setName(txtName.getText());
+                mode.setSpeed(Integer.parseInt(txtSpeed.getText()));
+                mode.setTime(Integer.parseInt(txtTime.getText()));
+                mode.setPerformative(Mode.EDIT);
+                myControl.sendData(new ObjectWrapper(ObjectWrapper.ACCESS_MODE, mode));
+                btnNewActionPerformed(evt);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int selected = tblMode.getSelectedRow();
+        if (selected >= 0) {
+            Mode mode = new Mode();
+            try {
+                if(!checkMode())
+                    return;
+                mode.setName(txtName.getText());
+                mode.setSpeed(Integer.parseInt(txtSpeed.getText()));
+                mode.setTime(Integer.parseInt(txtTime.getText()));
+                mode.setPerformative(Mode.DELETE);
+                myControl.sendData(new ObjectWrapper(ObjectWrapper.ACCESS_MODE, mode));
+                btnNewActionPerformed(evt);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
