@@ -3,7 +3,10 @@ package jdbc.dao;
 import java.util.ArrayList;
 import model.Ranking;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import model.Tournament;
 import model.User;
 /**
@@ -17,21 +20,44 @@ public class RankingDAO extends DAO{
     }
     public ArrayList<Ranking> getRankingByWinRate(){
         ArrayList<Ranking> result = new ArrayList<>();
-        String sql = "SELECT a.id, a.username, a.name, a.role, a.email, a.birthday, a.isBanned," +
-"                     (      (SELECT COUNT(b.outcome)   " +
-"                               FROM tblresult as b  " +
-"                               WHERE b.tblUserID = a.id " +
-"                               AND b.outcome = 1" +
-"                               GROUP BY b.tblUserID)/ " +
-"                               (SELECT COUNT(c.tblUserID) " +
-"                               FROM tblresult as c\n" +
-"                               WHERE c.tblUserID = a.id)*100 " +
-"                      ) as tilethang " +
-"                       FROM tbluser as a " +
-"                       ORDER BY tilethang DESC;";
+//        String sql = "SELECT a.id, a.username, a.name, a.role, a.email, a.birthday, a.isBanned," +
+//"                     (      (SELECT COUNT(b.outcome)   " +
+//"                               FROM tblresult as b  " +
+//"                               WHERE b.tblUserID = a.id " +
+//"                               AND b.outcome = 1" +
+//"                               GROUP BY b.tblUserID)/ " +
+//"                               (SELECT COUNT(c.tblUserID) " +
+//"                               FROM tblresult as c\n" +
+//"                               WHERE c.tblUserID = a.id)*100 " +
+//"                      ) as tilethang " +
+//"                       FROM tbluser as a " +
+//"                       ORDER BY tilethang DESC;";
+//        try {
+//            PreparedStatement ps = con.prepareStatement(sql);
+//            ResultSet rs = ps.executeQuery();
+//            while( rs.next()){
+//                Ranking r = new Ranking();
+//                r.setId( rs.getInt(1));
+//                r.setUsername(rs.getString(2));
+//                r.setName(rs.getString(3));
+//                r.setRole(rs.getString(4));
+//                r.setEmail(rs.getString(5));
+//                r.setBirthday(rs.getDate(6));
+//                r.setIsBanned( ( rs.getInt(7) == 1 ? true : false));
+//                r.setWinRate( rs.getFloat("tilethang"));
+//                result.add(r);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        Date now = new Date();
+        String sql = "{call xep_hang_ti_le_thang(?)}";
+        
         try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            CallableStatement cs = con.prepareCall(sql);
+            cs.setString(1, sdf.format(now));
+            ResultSet rs = cs.executeQuery();
             while( rs.next()){
                 Ranking r = new Ranking();
                 r.setId( rs.getInt(1));
@@ -42,6 +68,7 @@ public class RankingDAO extends DAO{
                 r.setBirthday(rs.getDate(6));
                 r.setIsBanned( ( rs.getInt(7) == 1 ? true : false));
                 r.setWinRate( rs.getFloat("tilethang"));
+                r.setBadge(rs.getInt("soHuyHieu"));
                 result.add(r);
             }
         } catch (Exception e) {

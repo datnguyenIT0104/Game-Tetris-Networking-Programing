@@ -349,6 +349,32 @@ public class UDPServerCtr {
                             }
 
                             break;
+                        case ObjectWrapper.BAN_PLAYER:
+                            result.setPerformative(ObjectWrapper.REPLY_BAN_PLAYER);
+                            if( (new UserDAO()).banPlayer((User) receiveData.getData())){
+                                result.setData(receiveData.getData());
+                            }else
+                                result.setData("false");
+                            break;
+                        case ObjectWrapper.UNBAN_PLAYER:
+                            result.setPerformative(ObjectWrapper.REPLY_UNBAN_PLAYER);
+                            if( (new UserDAO()).banPlayer((User) receiveData.getData())){
+                                result.setData(receiveData.getData());
+                            }else
+                                result.setData("false");
+                            break;
+                        case ObjectWrapper.GET_ALL_TOURNAMENT:
+                            result.setPerformative(ObjectWrapper.REPLY_GET_ALL_TOURNAMENT);
+                            
+                            result.setData( (new TournamentDAO()).getAllTournaments());
+//                            System.out.println("Ok");
+                            break;
+                        case ObjectWrapper.RANKING_BY_SCORE_IN_TOURNAMENT:
+                            result.setPerformative(ObjectWrapper.REPLY_RANKING_BY_SCORE_IN_TOURNAMEN);
+                            
+                            result.setData((new TournamentUserDAO()).getPlayerInTournament((Tournament) receiveData.getData()));
+                            
+                            break;
                     }
 
                     // tao mang dem 

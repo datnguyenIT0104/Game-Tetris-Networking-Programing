@@ -188,17 +188,18 @@ public class GameForm extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        palBound = new javax.swing.JPanel();
         jpnGameAreaPlaceholder = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        palBlockArea = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         labUsernamePlayer = new javax.swing.JLabel();
         txtScore = new javax.swing.JLabel();
         txtLevel = new javax.swing.JLabel();
-        txtTimer = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        palBlockArea = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        txtTimer = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -208,7 +209,9 @@ public class GameForm extends JFrame {
             }
         });
 
-        jpnGameAreaPlaceholder.setBackground(new java.awt.Color(238, 238, 238));
+        palBound.setLayout(null);
+
+        jpnGameAreaPlaceholder.setBackground(new java.awt.Color(15, 25, 35));
         jpnGameAreaPlaceholder.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout jpnGameAreaPlaceholderLayout = new javax.swing.GroupLayout(jpnGameAreaPlaceholder);
@@ -222,119 +225,90 @@ public class GameForm extends JFrame {
             .addGap(0, 398, Short.MAX_VALUE)
         );
 
+        palBound.add(jpnGameAreaPlaceholder);
+        jpnGameAreaPlaceholder.setBounds(20, 100, 200, 400);
+
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 204));
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("GAME TETRIS");
+        palBound.add(jLabel1);
+        jLabel1.setBounds(10, 11, 420, 29);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Player:");
-
-        labUsernamePlayer.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        labUsernamePlayer.setText("player");
-
-        txtScore.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtScore.setText("Score: 0");
-
-        txtLevel.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtLevel.setText("Level: 1");
-
-        txtTimer.setEditable(false);
-        txtTimer.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        txtTimer.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtTimer.setText("00:00");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel4.setText("Timer:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtScore)
-                    .addComponent(txtLevel)
-                    .addComponent(jLabel2)
-                    .addComponent(labUsernamePlayer, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labUsernamePlayer)
-                .addGap(18, 18, 18)
-                .addComponent(txtScore)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtLevel)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtTimer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(19, 19, 19))
-        );
-
-        palBlockArea.setBackground(new java.awt.Color(238, 238, 238));
+        palBlockArea.setBackground(new java.awt.Color(15, 25, 35));
 
         javax.swing.GroupLayout palBlockAreaLayout = new javax.swing.GroupLayout(palBlockArea);
         palBlockArea.setLayout(palBlockAreaLayout);
         palBlockAreaLayout.setHorizontalGroup(
             palBlockAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 165, Short.MAX_VALUE)
         );
         palBlockAreaLayout.setVerticalGroup(
             palBlockAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 98, Short.MAX_VALUE)
         );
 
+        palBound.add(palBlockArea);
+        palBlockArea.setBounds(250, 160, 165, 98);
+
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("NEXT BLOCK");
+        palBound.add(jLabel3);
+        jLabel3.setBounds(290, 130, 92, 17);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Player:");
+        palBound.add(jLabel2);
+        jLabel2.setBounds(270, 300, 53, 22);
+
+        labUsernamePlayer.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        labUsernamePlayer.setForeground(new java.awt.Color(255, 255, 255));
+        labUsernamePlayer.setText("player");
+        palBound.add(labUsernamePlayer);
+        labUsernamePlayer.setBounds(270, 330, 141, 22);
+
+        txtScore.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtScore.setForeground(new java.awt.Color(255, 255, 255));
+        txtScore.setText("Score: 0");
+        palBound.add(txtScore);
+        txtScore.setBounds(270, 370, 100, 22);
+
+        txtLevel.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtLevel.setForeground(new java.awt.Color(255, 255, 255));
+        txtLevel.setText("Level: 1");
+        palBound.add(txtLevel);
+        txtLevel.setBounds(270, 410, 90, 22);
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Timer:");
+        palBound.add(jLabel4);
+        jLabel4.setBounds(270, 450, 51, 22);
+
+        txtTimer.setEditable(false);
+        txtTimer.setBackground(new java.awt.Color(15, 25, 35));
+        txtTimer.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtTimer.setForeground(new java.awt.Color(255, 255, 255));
+        txtTimer.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtTimer.setText("00:00");
+        palBound.add(txtTimer);
+        txtTimer.setBounds(330, 450, 90, 34);
+
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/backGround.png"))); // NOI18N
+        palBound.add(jLabel6);
+        jLabel6.setBounds(0, -6, 450, 560);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(189, 189, 189)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jpnGameAreaPlaceholder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(93, 93, 93)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(palBlockArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(35, 35, 35))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addGap(64, 64, 64))))
+            .addComponent(palBound, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(palBlockArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jpnGameAreaPlaceholder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22))
+            .addComponent(palBound, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -351,10 +325,11 @@ public class GameForm extends JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jpnGameAreaPlaceholder;
     private javax.swing.JLabel labUsernamePlayer;
     private javax.swing.JPanel palBlockArea;
+    private javax.swing.JPanel palBound;
     private javax.swing.JLabel txtLevel;
     private javax.swing.JLabel txtScore;
     private javax.swing.JTextField txtTimer;

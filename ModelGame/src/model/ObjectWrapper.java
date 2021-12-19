@@ -109,6 +109,18 @@ public class ObjectWrapper implements Serializable{
     public static final int STATUS_OF_ENEMY = 98;
     public static final int SEND_REPORT_TO_SERVER = 99;
     public static final int REPLY_SEND_REPORT_TO_SERVER = 100;
+    public static final int GET_ALL_REPORT = 101;
+    public static final int REPLY_GET_ALL_REPORT = 102;
+    public static final int BAN_PLAYER = 103;
+    public static final int REPLY_BAN_PLAYER = 104;
+    public static final int SERVER_INFORM_CLIENT_UPDATE_INFOR_FRIEND = 105;
+    public static final int UNBAN_PLAYER = 106;
+    public static final int REPLY_UNBAN_PLAYER = 107;
+    public static final int BANNED_BY_MANAGE = 108;
+    public static final int UNBANNED_BY_MANAGE = 109;
+    public static final int GET_ALL_TOURNAMENT = 110;
+    public static final int REPLY_GET_ALL_TOURNAMENT = 111;
+    
     
     private int performative;
     private Object data;

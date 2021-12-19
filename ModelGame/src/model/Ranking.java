@@ -17,6 +17,7 @@ public class Ranking extends User implements Serializable{
     
     public Ranking() {
         super();
+        badge = 0;
     }
 
     public Ranking(float winRate, int totalWinMatch, int scoreInTournament, float winRateWOPlayer, int badge, int totalMatch) {

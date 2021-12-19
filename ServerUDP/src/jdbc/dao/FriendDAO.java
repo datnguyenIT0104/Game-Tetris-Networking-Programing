@@ -28,12 +28,12 @@ public class FriendDAO extends DAO{
 "					AND b.tbluser2 = d.id\n" +
 "					AND c.id <> d.id) as friend\n" +
                     "WHERE a.username = ? \n" +
-                    "AND a.password = ?\n" +
+//                    "AND a.password = ?\n" +
                     "AND friend.idu = a.id;";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
+//            ps.setString(2, user.getPassword());
             ResultSet rs = ps.executeQuery();
             while( rs.next()){
                 Friend friend = new Friend();
@@ -43,7 +43,7 @@ public class FriendDAO extends DAO{
                 friend.setRole(rs.getString("role"));
                 friend.setBirthday( rs.getDate("birthday"));
                 friend.setEmail(rs.getString("email"));
-                
+                friend.setIsBanned(rs.getInt("isBanned") == 1 ? true: false);
                 // them vao danh sach ban be
                 result.add(friend);
                 

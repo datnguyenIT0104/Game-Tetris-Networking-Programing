@@ -12,6 +12,7 @@ import model.Tournament;
 import model.TournamentUser;
 import model.User;
 import tcp.client.control.ClientCtr;
+import tcp.client.view.general.HomeFrm;
 
 /**
  *
@@ -33,7 +34,7 @@ public class JoinTournamentFrm extends javax.swing.JFrame {
 
         this.pack();
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         this.setVisible(true);
         
@@ -132,6 +133,11 @@ public class JoinTournamentFrm extends javax.swing.JFrame {
         btnBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("Join Tournament");
@@ -248,8 +254,14 @@ public class JoinTournamentFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_tblTournamentMouseClicked
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        ((HomeFrm)myControl.getForm()).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        ((HomeFrm)myControl.getForm()).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_formWindowClosing
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

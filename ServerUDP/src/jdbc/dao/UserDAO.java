@@ -77,7 +77,7 @@ public class UserDAO extends DAO{
     public boolean updateAccount( User u){
         boolean result = false;
         String sql = "UPDATE tbluser"
-                + "SET  password = ?, email = ?, name = ?, birthday = ?, role = ?, isBanned = ? )"
+                + "SET  password = ?, email = ?, name = ?, birthday = ?, role = ?, isBanned = ? "
                 + "WHERE id = ?   ;";
         SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         
@@ -101,5 +101,22 @@ public class UserDAO extends DAO{
         return result;
     }
 
-    
+    public boolean banPlayer( User u){
+        boolean result = false;
+        String sql = "UPDATE tbluser "
+                + "SET isBanned = ? "
+                + "WHERE id = ?;";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, u.isIsBanned() ? 1: 0);
+            ps.setInt(2, u.getId());
+            int count = ps.executeUpdate();
+            if( count > 0) result = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
 }

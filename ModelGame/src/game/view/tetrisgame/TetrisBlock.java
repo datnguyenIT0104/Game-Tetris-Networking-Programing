@@ -143,6 +143,11 @@ public class TetrisBlock implements Serializable{
         color = availableColors[c];
         x = tbe.getX();
         y = tbe.getY();
-        
+        for (int i = 0; i < shape.length; i++) {
+            for (int j = 0; j < shape[i].length; j++) {
+                System.out.print("" + shape[i][j] + " ");
+            }
+            System.out.println("");
+        }
     }
 }

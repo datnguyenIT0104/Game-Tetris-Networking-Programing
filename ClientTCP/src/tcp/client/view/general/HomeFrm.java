@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -30,6 +31,7 @@ import tcp.client.view.group.PlayInGroupFrm;
 import tcp.client.view.match.ManageModeFrm;
 import tcp.client.view.match.ReceiveChallengeFrm;
 import tcp.client.view.ranking.RankingBTWinMatchFrm;
+import tcp.client.view.ranking.SelectTournamentFrm;
 import tcp.client.view.tournament.PlayInTournamentFrm;
 
 /**
@@ -37,7 +39,7 @@ import tcp.client.view.tournament.PlayInTournamentFrm;
  * @author DatIT
  */
 public class HomeFrm extends javax.swing.JFrame {
-    
+
     private ClientCtr myControl;
 
     // data hide
@@ -54,7 +56,7 @@ public class HomeFrm extends javax.swing.JFrame {
     private DefaultTableModel modelGroupsJoined;
     private DefaultTableModel modelFriend;
     private DefaultTableModel modelFriendRequest;
-    
+
     public HomeFrm(ClientCtr myControl, User myAccount, ArrayList<User> listUsersOnline) {
         initComponents();
         this.myControl = myControl;
@@ -74,7 +76,7 @@ public class HomeFrm extends javax.swing.JFrame {
 
         // khoi tao thong tin ca nhan
         setProperties();
-        
+
         this.pack();
 //        this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -88,19 +90,19 @@ public class HomeFrm extends javax.swing.JFrame {
         initFriendRequest();
         initGroupJoined();
     }
-    
+
     private void initRanking() {
         modelRanking = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-            
+
         };
         modelRanking.setColumnIdentifiers(new Object[]{
-            "TOP", "USERNAME", "WIN RATE", "STATUS"
+            "TOP", "USERNAME", "WIN RATE", "BADGE", "STATUS"
         });
-        
+
         tblRanking.setModel(modelRanking);
     }
 
@@ -110,7 +112,7 @@ public class HomeFrm extends javax.swing.JFrame {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-            
+
         };
         modelFriend.setColumnIdentifiers(new Object[]{
             "USERNAME", "TOP"
@@ -124,7 +126,7 @@ public class HomeFrm extends javax.swing.JFrame {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
-            
+
         };
         modelFriendRequest.setColumnIdentifiers(new Object[]{
             "USERNAME", "TOP"
@@ -139,7 +141,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 return false;
             }
         };
-        
+
         int index = 1;
         modelGroupsJoined.setColumnIdentifiers(new Object[]{
             "INDEX", "NAME", "NUMBER OF MEMBERS"
@@ -147,29 +149,34 @@ public class HomeFrm extends javax.swing.JFrame {
         modelGroupsJoined.setRowCount(0);
         tblGroupsJoined.setModel(modelGroupsJoined);
     }
-    
+
     private void getDataFromServer() {
         myControl.sendData(new ObjectWrapper(ObjectWrapper.CHECK_OUT_GAME_BEFORE, myAccount));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.RANKING, "winrate"));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.FRIEND_OF_USER, myAccount));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GROUP_JOINED, myAccount));
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GET_LIST_REQUEST_FRIEND, "GetListRequest"));
-        
+
     }
-    
+
+    public void getInforFriend() {
+        myControl.sendData(new ObjectWrapper(ObjectWrapper.FRIEND_OF_USER, myAccount));
+    }
+
     public void getGroupJoined() {
         myControl.sendData(new ObjectWrapper(ObjectWrapper.GROUP_JOINED, myAccount));
-        
+
     }
-    
+
     public void fillRanking() {
         // lay du lieu
         modelRanking.setRowCount(0);
         int index = 1;
-        
+
         for (Ranking rank : listRankings) {
             String status = "";
 //            User uTemp = new User(rank.getId(), rank.getUsername(), rank.getName(), rank.getEmail(), rank.getBirthday(), rank.getRole(), rank.isIsBanned());
+            boolean isPlaying = false;
             for (User user : listUsersOnline) {
                 if (rank.getUsername().equals(user.getUsername())) {
                     if (user.getStatus() == User.ONLINE) {
@@ -178,15 +185,17 @@ public class HomeFrm extends javax.swing.JFrame {
                         status = "offline";
                     } else {
                         status = "playing";
+                        isPlaying = true;
                     }
                     break;
                 }
-            }            
+            }
+
             modelRanking.addRow(new Object[]{
-                index++, rank.getUsername(), rank.getWinRate() + "%", status
+                index++, rank.getUsername(), rank.getWinRate() + "%", rank.getBadge() == 0 ? "" : rank.getBadge(), status
             });
         }
-        
+
         modelRanking.fireTableDataChanged();
     }
 
@@ -218,20 +227,20 @@ public class HomeFrm extends javax.swing.JFrame {
         }
         modelGroupsJoined.fireTableDataChanged();
     }
-    
+
     public void fillRequestFriend() {
         // yeu cau ket ban
         modelFriendRequest.setRowCount(0);
         tblFriendRequest.removeAll();
         for (int j = 0; j < listFriendRequest.size(); j++) {
-            
+
             User user = listFriendRequest.get(j);
             Friend friend = user.getListFriend().get(0);                        // them danh sach ban be
             if (friend.getId() == myAccount.getId() && friend.getPerformative() == Friend.HAS_NOT_REPLIED_YET) {
                 int rank = 1;
                 for (Ranking r : listRankings) {
                     if (r.getId() == user.getId()) {
-                        
+
                         break;
                     }
                     rank++;
@@ -242,11 +251,11 @@ public class HomeFrm extends javax.swing.JFrame {
             }
             //dong y ket ban
             if (user.getId() == myAccount.getId() && friend.getPerformative() == Friend.ACCEPT) {
-                
+
                 listFriendRequest.remove(j);
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.REMOVE_REQUEST_FRIEND, listFriendRequest));
                 JOptionPane.showMessageDialog(this, "You and " + friend.getUsername() + " have become friend ^^");
-                
+
                 boolean isExist = false;
                 for (int i = 0; i < myAccount.getListFriend().size(); i++) {
                     Friend f = myAccount.getListFriend().get(i);
@@ -265,14 +274,14 @@ public class HomeFrm extends javax.swing.JFrame {
 
         // từ chối kb
     }
-    
+
     public void updateStatus() {
         fillRanking();
         fillFriend();
         fillGroupJoined();
         fillRequestFriend();
     }
-    
+
     private void setProperties() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         labName.setText(myAccount.getName());
@@ -283,12 +292,12 @@ public class HomeFrm extends javax.swing.JFrame {
             menuManageGame.hide();
         }
     }
-    
+
     public void receiveDataProcessing(ObjectWrapper ow) {
         switch (ow.getPerformative()) {
             case ObjectWrapper.REPLY_RANKING:
                 setListRankings((ArrayList<Ranking>) ow.getData());
-                
+
                 updateStatus();
                 break;
             case ObjectWrapper.REPLY_FRIEND_OF_USER:
@@ -298,7 +307,7 @@ public class HomeFrm extends javax.swing.JFrame {
             case ObjectWrapper.REPLY_GROUP_JOINED:
                 setListGroupsJoined((ArrayList<Group>) ow.getData());
                 fillGroupJoined();
-                
+
                 break;
             case ObjectWrapper.SERVER_INFORM_LIST_REQUEST_FRIEND:
                 setListFriendRequest((ArrayList<User>) ow.getData());
@@ -307,10 +316,10 @@ public class HomeFrm extends javax.swing.JFrame {
             case ObjectWrapper.REPLY_GET_LIST_REQUEST_FRIEND:
                 listFriendRequest = (ArrayList<User>) ow.getData();
                 fillRequestFriend();
-                break;            
+                break;
             case ObjectWrapper.REPLY_ACCEPT_REQUEST_FRIEND:
                 if (ow.getData() instanceof User) {
-                    
+
                     User newFU = (User) ow.getData();
                     Friend newFriend = new Friend();
                     newFriend.setId(newFU.getId());
@@ -319,17 +328,17 @@ public class HomeFrm extends javax.swing.JFrame {
                     newFriend.setBirthday(newFU.getBirthday());
                     newFriend.setRole(newFU.getRole());
                     newFriend.setEmail(newFU.getEmail());
-                    
+
                     myAccount.getListFriend().add(newFriend);
                     fillFriend();
                     JOptionPane.showMessageDialog(this, "You and " + newFriend.getUsername() + " have become friend ^^");
-                    
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Error");
                 }
                 break;
             case ObjectWrapper.REPLY_REMOVE_REQUEST_FRIEND:
-                
+
                 break;
             case ObjectWrapper.REPLY_REJECT_REQUEST_FRIEND:
                 break;
@@ -346,30 +355,32 @@ public class HomeFrm extends javax.swing.JFrame {
                 } else {
                     JOptionPane.showMessageDialog(this, "Fail when unfriend");
                 }
-                
+
                 break;
             case ObjectWrapper.SERVER_INFORM_UNFRIEND:
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.FRIEND_OF_USER, myAccount));
                 break;
-            
+
             case ObjectWrapper.FREE_WAITING:
                 //KHONG LAM GI CA
                 break;
             case ObjectWrapper.SERVER_SEND_CHALLENGE_COMMUNICATE:// phia nguoi nhan loi thach dau
-                
+
                 ReceiveChallengeFrm rcf = new ReceiveChallengeFrm(myControl, myAccount, (Match) ow.getData());
-                
+
                 break;
             case ObjectWrapper.SERVER_SEND_ACCEPT_CHALLENGE_COMMUNICATE:// phia nguoi gui loi thach dau bat dau game
 
                 new GameFormClient(myControl, ((Match) ow.getData()), myAccount).setVisible(true);
 //                new GameForm(myControl, ((Match) ow.getData()), myAccount).setVisible(true);
-                if( playInGroupFrm != null)
+                if (playInGroupFrm != null) {
                     playInGroupFrm.setVisible(false);
+                }
                 this.setVisible(false);
                 break;
             case ObjectWrapper.SERVER_INFORM_RESULT_MATCH:
 //                Match m = (Match) ow.getData();
+                // neu bat cua so nhom thi se update thong tin sau khi choi xong
                 if (((Match) ow.getData()).getGroup() == null) {
                     this.setVisible(true);
                 } else {
@@ -379,27 +390,38 @@ public class HomeFrm extends javax.swing.JFrame {
                     } catch (InterruptedException ex) {
                     }
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_RANK_OF_GROUP, ow.getData()));
-                    
+
+                }
+                // neu choi trong gia dau
+                if (((Match) ow.getData()).getTournament() == null) {
+                    this.setVisible(true);
+                } else {
+//                    this.setVisible(true);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                    }
+                    returnTournament((Match) ow.getData());
                 }
                 if (((Match) ow.getData()).getListResult().get(0).getOutcome() == 1) {
                     new ResultMatchFrm(((Match) ow.getData()).getListResult().get(0), ((Match) ow.getData()).getListResult().get(1)).setVisible(true);
-                    
+
                 } else {
                     new ResultMatchFrm(((Match) ow.getData()).getListResult().get(1), ((Match) ow.getData()).getListResult().get(0)).setVisible(true);
-                    
+
                 }
                 break;
             case ObjectWrapper.SERVER_INFORM_ALL_UPDATE_RANK:
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.RANKING, "winrate"));
                 break;
-            
+
             case ObjectWrapper.REPLY_KICK_OUT_GROUP:
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_MEMBER_OF_GROUP, ow.getData()));
-                
+
                 break;
             case ObjectWrapper.REPLY_LEAVE_GROUP:
                 myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_MEMBER_OF_GROUP, ow.getData()));
-                
+
                 break;
             case ObjectWrapper.SERVER_INFORM_UPDATE_GROUP:
 //                 neu nhom dang xuat hien bi tac dong thi se cap nhat lai table
@@ -413,7 +435,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 System.out.println("udate group");
                 break;
             case ObjectWrapper.SERVER_INFORM_MESSAGE_OF_GROUP:
-                
+
                 if (playInGroupFrm == null) {
                     return;
                 }
@@ -421,7 +443,7 @@ public class HomeFrm extends javax.swing.JFrame {
                         && playInGroupFrm.isVisible()) {
                     playInGroupFrm.updateBoard(((Group) ow.getData()).getMessage());
                 }
-                
+
                 break;
             case ObjectWrapper.REPLY_GET_MESSAGE_OF_GROUP:
                 if (playInGroupFrm == null) {
@@ -430,17 +452,17 @@ public class HomeFrm extends javax.swing.JFrame {
                 if (playInGroupFrm.isVisible()) {
                     playInGroupFrm.updateBoard((String) ow.getData());
                 }
-                
+
                 break;
             case ObjectWrapper.REPLY_JOIN_GROUP_BY_INVITATION:
                 if (ow.getData() instanceof Group) {
-                    
+
                     JOptionPane.showMessageDialog(this, "Join Successfully");
-                    
+
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_GROUP_TO_ALL_CLIENT, "UpdateToAll"));
                     // update thanh vien neu dang o trong nhom
                     myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_MEMBER_OF_GROUP, ow.getData()));
-                    
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Fail when join group", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -457,18 +479,68 @@ public class HomeFrm extends javax.swing.JFrame {
 //                }
 //                break;
             case ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE:
-                if( ow.getData() instanceof Match){
+                if (ow.getData() instanceof Match) {
                     GameFormClient gfc = new GameFormClient(myControl, (Match) ow.getData(), myAccount);
                     gfc.backGame();
                     this.setVisible(false);
-                }else
+                } else {
                     this.setVisible(true);
-                
+                }
+
                 break;
             case ObjectWrapper.STATUS_OF_ENEMY:
                 JOptionPane.showMessageDialog(this, ow.getData());
                 break;
+            case ObjectWrapper.REPLY_SEND_REPORT_TO_SERVER:
+                if (ow.getData().equals("ok")) {
+                    JOptionPane.showMessageDialog(this, "Send the report successfully");
+                } else {
+                    JOptionPane.showMessageDialog(this, "You have already submitted the report");
+                }
+                break;
+            case ObjectWrapper.REPLY_BAN_PLAYER:
+                if (ow.getData() instanceof User) {
+                    JOptionPane.showMessageDialog(this, ((User) ow.getData()).getUsername() + " has been banned from playing this game!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Fail");
+                }
+                break;
+            case ObjectWrapper.REPLY_UNBAN_PLAYER:
+                if (ow.getData() instanceof User) {
+                    JOptionPane.showMessageDialog(this, ((User) ow.getData()).getUsername() + " can return this game");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Fail");
+                }
+                break;
         }
+    }
+
+    public void lockORUnLock(boolean ok) {
+        menuGroup.setEnabled(ok);
+        menuRanking.setEnabled(ok);
+        menuTournament.setEnabled(ok);
+        
+        tblRanking.setEnabled(ok);
+        tblFriend.setEnabled(ok);
+        tblGroupsJoined.setEnabled(ok);
+        tblFriendRequest.setEnabled(ok);
+    }
+
+    private void returnTournament(Match myMatch) {
+
+        ObjectWrapper fun = null;
+        for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
+            if (activeFun.getData() instanceof PlayInTournamentFrm) {
+                fun = activeFun;
+
+            }
+        }
+        if (fun != null) {
+            myControl.getMyFuntion().remove(fun);
+        }
+        PlayInTournamentFrm pitf = new PlayInTournamentFrm(myAccount, myControl, myMatch.getTournament());
+        pitf.setVisible(true);
+        this.dispose();
     }
 
     public void leveaGroup(Group group) {
@@ -476,7 +548,7 @@ public class HomeFrm extends javax.swing.JFrame {
             Group g = listGroupsJoined.get(i);
             if (g.getId() == group.getId()) {
                 listGroupsJoined.remove(i);
-                
+
                 break;
             }
         }
@@ -495,39 +567,39 @@ public class HomeFrm extends javax.swing.JFrame {
             playInGroupFrm.setListUsersOnline(listUsersOnline);
         }
     }
-    
+
     public ArrayList<Ranking> getListRankings() {
         return listRankings;
     }
-    
+
     public void setListRankings(ArrayList<Ranking> listRankings) {
         this.listRankings = listRankings;
     }
-    
+
     public ArrayList<Group> getListGroupsJoined() {
         return listGroupsJoined;
     }
-    
+
     public void setListGroupsJoined(ArrayList<Group> listGroupsJoined) {
         this.listGroupsJoined = listGroupsJoined;
     }
-    
+
     public ArrayList<User> getListFriendRequest() {
         return listFriendRequest;
     }
-    
+
     public void setListFriendRequest(ArrayList<User> listFriendRequest) {
         this.listFriendRequest = listFriendRequest;
     }
-    
+
     public PlayInGroupFrm getPlayInGroupFrm() {
         return playInGroupFrm;
     }
-    
+
     public void setPlayInGroupFrm(PlayInGroupFrm playInGroupFrm) {
         this.playInGroupFrm = playInGroupFrm;
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -556,19 +628,19 @@ public class HomeFrm extends javax.swing.JFrame {
         labBirthday = new javax.swing.JLabel();
         labRole = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuGroup = new javax.swing.JMenu();
         mnuJoinGroup = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mnuCreateGroup = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         mnuInvitation = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        menuRanking = new javax.swing.JMenu();
         mnuRankWithOP = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         mnuRankTotalWinMatch = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         mnuScoreInTournament = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        menuTournament = new javax.swing.JMenu();
         mnuCreateTournament = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         mnuJoinTournament = new javax.swing.JMenuItem();
@@ -599,6 +671,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblRanking.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRanking.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblRankingMouseClicked(evt);
@@ -607,6 +680,11 @@ public class HomeFrm extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblRanking);
 
         btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Keyword:");
 
@@ -652,6 +730,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblFriend.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblFriend.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblFriendMouseClicked(evt);
@@ -689,6 +768,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblGroupsJoined.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblGroupsJoined.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblGroupsJoinedMouseClicked(evt);
@@ -726,6 +806,7 @@ public class HomeFrm extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblFriendRequest.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblFriendRequest.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblFriendRequestMouseClicked(evt);
@@ -766,8 +847,8 @@ public class HomeFrm extends javax.swing.JFrame {
 
         labRole.setText("role");
 
-        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/group.png"))); // NOI18N
-        jMenu1.setText("Group");
+        menuGroup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/group.png"))); // NOI18N
+        menuGroup.setText("Group");
 
         mnuJoinGroup.setText("Join Group");
         mnuJoinGroup.addActionListener(new java.awt.event.ActionListener() {
@@ -775,8 +856,8 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuJoinGroupActionPerformed(evt);
             }
         });
-        jMenu1.add(mnuJoinGroup);
-        jMenu1.add(jSeparator1);
+        menuGroup.add(mnuJoinGroup);
+        menuGroup.add(jSeparator1);
 
         mnuCreateGroup.setText("Create Group");
         mnuCreateGroup.addActionListener(new java.awt.event.ActionListener() {
@@ -784,8 +865,8 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuCreateGroupActionPerformed(evt);
             }
         });
-        jMenu1.add(mnuCreateGroup);
-        jMenu1.add(jSeparator5);
+        menuGroup.add(mnuCreateGroup);
+        menuGroup.add(jSeparator5);
 
         mnuInvitation.setText("Invitation");
         mnuInvitation.addActionListener(new java.awt.event.ActionListener() {
@@ -793,12 +874,12 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuInvitationActionPerformed(evt);
             }
         });
-        jMenu1.add(mnuInvitation);
+        menuGroup.add(mnuInvitation);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menuGroup);
 
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/rank2.png"))); // NOI18N
-        jMenu2.setText("Ranking");
+        menuRanking.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/rank2.png"))); // NOI18N
+        menuRanking.setText("Ranking");
 
         mnuRankWithOP.setText("With Other Player");
         mnuRankWithOP.addActionListener(new java.awt.event.ActionListener() {
@@ -806,8 +887,8 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuRankWithOPActionPerformed(evt);
             }
         });
-        jMenu2.add(mnuRankWithOP);
-        jMenu2.add(jSeparator2);
+        menuRanking.add(mnuRankWithOP);
+        menuRanking.add(jSeparator2);
 
         mnuRankTotalWinMatch.setText("Total Win Match");
         mnuRankTotalWinMatch.addActionListener(new java.awt.event.ActionListener() {
@@ -815,8 +896,8 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuRankTotalWinMatchActionPerformed(evt);
             }
         });
-        jMenu2.add(mnuRankTotalWinMatch);
-        jMenu2.add(jSeparator3);
+        menuRanking.add(mnuRankTotalWinMatch);
+        menuRanking.add(jSeparator3);
 
         mnuScoreInTournament.setText("Score In Tournament");
         mnuScoreInTournament.addActionListener(new java.awt.event.ActionListener() {
@@ -824,12 +905,12 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuScoreInTournamentActionPerformed(evt);
             }
         });
-        jMenu2.add(mnuScoreInTournament);
+        menuRanking.add(mnuScoreInTournament);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuRanking);
 
-        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/tournament2.png"))); // NOI18N
-        jMenu3.setText("Tournament");
+        menuTournament.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/tournament2.png"))); // NOI18N
+        menuTournament.setText("Tournament");
 
         mnuCreateTournament.setText("Manager");
         mnuCreateTournament.addActionListener(new java.awt.event.ActionListener() {
@@ -837,8 +918,8 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuCreateTournamentActionPerformed(evt);
             }
         });
-        jMenu3.add(mnuCreateTournament);
-        jMenu3.add(jSeparator4);
+        menuTournament.add(mnuCreateTournament);
+        menuTournament.add(jSeparator4);
 
         mnuJoinTournament.setText("Join");
         mnuJoinTournament.addActionListener(new java.awt.event.ActionListener() {
@@ -846,9 +927,9 @@ public class HomeFrm extends javax.swing.JFrame {
                 mnuJoinTournamentActionPerformed(evt);
             }
         });
-        jMenu3.add(mnuJoinTournament);
+        menuTournament.add(mnuJoinTournament);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(menuTournament);
 
         menuManageGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/source/icon/project-management.png"))); // NOI18N
         menuManageGame.setText("Manage Game");
@@ -863,6 +944,11 @@ public class HomeFrm extends javax.swing.JFrame {
         menuManageGame.add(jSeparator6);
 
         mnuViewReport.setText("View Report");
+        mnuViewReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuViewReportActionPerformed(evt);
+            }
+        });
         menuManageGame.add(mnuViewReport);
 
         jMenuBar1.add(menuManageGame);
@@ -939,7 +1025,7 @@ public class HomeFrm extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (myControl != null) {
-            
+
             myControl.closeConnnection();
         }
         System.exit(0);
@@ -955,9 +1041,9 @@ public class HomeFrm extends javax.swing.JFrame {
         if (fun != null) {
             myControl.getMyFuntion().remove(fun);
         }
-        
+
         JoinGroupFrm jgf = new JoinGroupFrm(myControl, myAccount);
-        
+
     }//GEN-LAST:event_mnuJoinGroupActionPerformed
 
     private void mnuCreateGroupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuCreateGroupActionPerformed
@@ -968,7 +1054,7 @@ public class HomeFrm extends javax.swing.JFrame {
             }
         }
         CreateGroupFrm createGF = new CreateGroupFrm(myControl, myAccount);
-        
+
     }//GEN-LAST:event_mnuCreateGroupActionPerformed
 
     private void tblRankingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRankingMouseClicked
@@ -977,7 +1063,17 @@ public class HomeFrm extends javax.swing.JFrame {
             String username = (String) modelRanking.getValueAt(selected, 1);
             for (Ranking rank : listRankings) {
                 if (rank.getUsername().equals(username)) {
-                    
+                    // cach don gian hon la xoa no khoi ds chuc nang hoat dong
+//                    ObjectWrapper fun = null;
+//                    for (ObjectWrapper ow : myControl.getMyFuntion()) {
+//                        if (ow.getData() instanceof PlayerDetailsFrm) {
+//                            fun = ow;
+//                            break;
+//                        }
+//                    }
+//                    if( fun != null)
+//                        myControl.getMyFuntion().remove(fun);
+
                     for (ObjectWrapper ow : myControl.getMyFuntion()) {
                         if (ow.getData() instanceof PlayerDetailsFrm) {
                             PlayerDetailsFrm pdf = (PlayerDetailsFrm) ow.getData();
@@ -996,9 +1092,9 @@ public class HomeFrm extends javax.swing.JFrame {
                     break;
                 }
             }
-            
+
         }
-        
+
     }//GEN-LAST:event_tblRankingMouseClicked
 
     private void tblFriendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblFriendMouseClicked
@@ -1007,7 +1103,17 @@ public class HomeFrm extends javax.swing.JFrame {
             String username = (String) modelFriend.getValueAt(selected, 0);
             for (Friend friend : myAccount.getListFriend()) {
                 if (friend.getUsername().equals(username)) {
-                    
+                    //cach don gian hon
+//                    ObjectWrapper fun = null;
+//                    for (ObjectWrapper ow : myControl.getMyFuntion()) {
+//                        if (ow.getData() instanceof PlayerDetailsFrm) {
+//                            fun = ow;
+//                            break;
+//                        }
+//                    }
+//                    if( fun != null)
+//                        myControl.getMyFuntion().remove(fun);
+
                     for (ObjectWrapper ow : myControl.getMyFuntion()) {
                         if (ow.getData() instanceof PlayerDetailsFrm) {
                             PlayerDetailsFrm pdf = (PlayerDetailsFrm) ow.getData();
@@ -1022,11 +1128,11 @@ public class HomeFrm extends javax.swing.JFrame {
                         }
                     }
                     PlayerDetailsFrm pdf = new PlayerDetailsFrm(myControl, friend, myAccount, listFriendRequest, listUsersOnline);
-                    
+
                     break;
                 }
             }
-            
+
         }
     }//GEN-LAST:event_tblFriendMouseClicked
 
@@ -1042,18 +1148,18 @@ public class HomeFrm extends javax.swing.JFrame {
                 // thay doi trang thai loi yeu cau kb
                 for (int i = 0; i < listFriendRequest.size(); i++) {
                     User user = listFriendRequest.get(i);
-                    
+
                     Friend friend = user.getListFriend().get(0);
                     if (user.getUsername().equals(username) && friend.getId() == myAccount.getId()) {
                         listFriendRequest.get(i).getListFriend().get(0).setPerformative(Friend.ACCEPT);
                         user.getListFriend().get(0).setPerformative(Friend.ACCEPT);
-                        
+
                         myControl.sendData(new ObjectWrapper(ObjectWrapper.ACCEPT_REQUEST_FRIEND, user));
                         myControl.sendData(new ObjectWrapper(ObjectWrapper.UPDATE_LIST_FRIEND_REQUEST, user));
                         break;
                     }
                 }
-                
+
             } else if (choice == JOptionPane.NO_OPTION) {
                 for (User user : listFriendRequest) {
                     Friend friend = user.getListFriend().get(0);
@@ -1066,7 +1172,7 @@ public class HomeFrm extends javax.swing.JFrame {
                     }
                 }
             }
-            
+
         }
     }//GEN-LAST:event_tblFriendRequestMouseClicked
 
@@ -1075,7 +1181,7 @@ public class HomeFrm extends javax.swing.JFrame {
             return;
         }
         ManagerTournamentFrm mtf = new ManagerTournamentFrm(myControl, myAccount);
-        
+
     }//GEN-LAST:event_mnuCreateTournamentActionPerformed
 
     private void mnuJoinTournamentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuJoinTournamentActionPerformed
@@ -1089,11 +1195,11 @@ public class HomeFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuJoinTournamentActionPerformed
 
     private void mnuRankWithOPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuRankWithOPActionPerformed
-        
+
         for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
             if (activeFun.getData() instanceof RankingWOPlayerFrm) {
                 RankingWOPlayerFrm rf = ((RankingWOPlayerFrm) activeFun.getData());
-                
+
                 rf.initTable();
                 rf.setVisible(true);
                 return;
@@ -1106,7 +1212,7 @@ public class HomeFrm extends javax.swing.JFrame {
         for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
             if (activeFun.getData() instanceof RankingBTWinMatchFrm) {
                 RankingBTWinMatchFrm rf = ((RankingBTWinMatchFrm) activeFun.getData());
-                
+
                 rf.initTable();
                 rf.setVisible(true);
                 return;
@@ -1116,24 +1222,35 @@ public class HomeFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuRankTotalWinMatchActionPerformed
 
     private void mnuScoreInTournamentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuScoreInTournamentActionPerformed
+        ObjectWrapper fun = null;
+        for (ObjectWrapper ow : myControl.getMyFuntion()) {
+            if( ow.getData() instanceof SelectTournamentFrm){
+                fun = ow;
+                break;
+            }
+        }
+        if( fun  != null)
+            myControl.getMyFuntion().remove(fun);
+        SelectTournamentFrm frm = new SelectTournamentFrm(myControl);
+        frm.setVisible(true);
         
     }//GEN-LAST:event_mnuScoreInTournamentActionPerformed
 
     private void tblGroupsJoinedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblGroupsJoinedMouseClicked
         int selected = tblGroupsJoined.getSelectedRow();
-        
+
         if (selected >= 0) {
             String nameGroup = (String) modelGroupsJoined.getValueAt(selected, 1);
             Group myGroup = new Group();
             for (Group group : listGroupsJoined) {
                 if (group.getName().equalsIgnoreCase(nameGroup)) {
-                    
+
                     myGroup.setId(group.getId());
                     myGroup.setName(group.getName());
                     break;
                 }
             }
-            
+
             initPlayInGroup(myGroup);
         }
     }//GEN-LAST:event_tblGroupsJoinedMouseClicked
@@ -1149,7 +1266,7 @@ public class HomeFrm extends javax.swing.JFrame {
         if (fun != null) {
             myControl.getMyFuntion().remove(fun);
         }
-        
+
         (new InvitationFrm(myControl, myAccount)).setVisible(true);
     }//GEN-LAST:event_mnuInvitationActionPerformed
 
@@ -1164,11 +1281,62 @@ public class HomeFrm extends javax.swing.JFrame {
         if (fun != null) {
             myControl.getMyFuntion().remove(fun);
         }
-        
+
         ManageModeFrm modeFrm = new ManageModeFrm(myControl, myAccount);
         modeFrm.setVisible(true);
     }//GEN-LAST:event_mnuModeActionPerformed
-    
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String key = txtKeyword.getText();
+        if (key.equals("") || key.length() == 0)
+            fillRanking();
+        else {
+            modelRanking.setRowCount(0);
+            int index = 0;
+
+            for (Ranking rank : listRankings) {
+                String status = "";
+                index++;
+                if (rank.getUsername().indexOf(key) == -1) {
+                    continue;
+                }
+                for (User user : listUsersOnline) {
+
+                    if (rank.getUsername().equals(user.getUsername())) {
+                        if (user.getStatus() == User.ONLINE) {
+                            status = "online";
+                        } else if (user.getStatus() == User.OFFLINE) {
+                            status = "offline";
+                        } else {
+                            status = "playing";
+                        }
+                        break;
+                    }
+                }
+                modelRanking.addRow(new Object[]{
+                    index, rank.getUsername(), rank.getWinRate() + "%", status
+                });
+            }
+
+            modelRanking.fireTableDataChanged();
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void mnuViewReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuViewReportActionPerformed
+        ObjectWrapper fun = null;
+        for (ObjectWrapper item : myControl.getMyFuntion()) {
+            if (item.getData() instanceof ViewReportFrm) {
+                fun = item;
+                break;
+            }
+        }
+        if (fun != null) {
+            myControl.getMyFuntion().remove(fun);
+        }
+        ViewReportFrm frm = new ViewReportFrm(myControl, myAccount);
+        frm.setVisible(true);
+    }//GEN-LAST:event_mnuViewReportActionPerformed
+
     public void initPlayInGroup(Group myGroup) {
         // neu chua hien lan nao se khoi tao
         if (playInGroupFrm == null) {
@@ -1178,11 +1346,11 @@ public class HomeFrm extends javax.swing.JFrame {
             playInGroupFrm.setMyGroup(myGroup);
             playInGroupFrm.initTable();
             playInGroupFrm.setVisible(true);
-            
+
             this.setVisible(false);
-            
+
         }
-        
+
     }
 
 
@@ -1193,9 +1361,6 @@ public class HomeFrm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -1215,7 +1380,10 @@ public class HomeFrm extends javax.swing.JFrame {
     private javax.swing.JLabel labName;
     private javax.swing.JLabel labRole;
     private javax.swing.JLabel labUsername;
+    private javax.swing.JMenu menuGroup;
     private javax.swing.JMenu menuManageGame;
+    private javax.swing.JMenu menuRanking;
+    private javax.swing.JMenu menuTournament;
     private javax.swing.JMenuItem mnuCreateGroup;
     private javax.swing.JMenuItem mnuCreateTournament;
     private javax.swing.JMenuItem mnuInvitation;

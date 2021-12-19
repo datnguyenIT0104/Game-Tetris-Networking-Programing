@@ -367,6 +367,9 @@ public class GameArea extends JPanel {
         g2d.drawString("Game Over!", gridColumns / 2 + 10, gridRows / 3 + 90);
     }
     public void restoreGame(GameAreaEncode gae){
+         // block
+        block.restoreGame(gae.getBlock());
+        
         int[][] backgroundInt = gae.getBackground();
         Color[] arrColor = block.getAvailableColors();
         for (int r = 0; r < gridRows; r++) {
@@ -384,8 +387,7 @@ public class GameArea extends JPanel {
                 }
             }
         }
-        // block
-        block.restoreGame(gae.getBlock());
+       
         repaint();
     }
     public void encode(GameAreaEncode gae) {
@@ -414,7 +416,9 @@ public class GameArea extends JPanel {
 
         gae.setBackground(backgroundInt);
     }
-
+    public void refreshGame(){
+        repaint();
+    }
     public TetrisBlock getBlock() {
         return block;
     }

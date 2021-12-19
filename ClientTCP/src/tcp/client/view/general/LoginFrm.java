@@ -170,7 +170,8 @@ public class LoginFrm extends javax.swing.JFrame {
             
             this.dispose();
         }else if( ow.getData().equals("false")){
-            JOptionPane.showMessageDialog(this, "Error when logining to server\nWrong username, password or you have been banned");
+            JOptionPane.showMessageDialog(this, "Error when logining to server\nWrong username, password or \n"
+                    + "you have been banned from playing this game", "Error", JOptionPane.ERROR_MESSAGE);
             
         }else if( ow.getData().equals("logined")){
             JOptionPane.showMessageDialog(this, "You have been login");

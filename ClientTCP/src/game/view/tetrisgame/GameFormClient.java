@@ -70,34 +70,17 @@ public class GameFormClient extends GameForm {
                         myControl.closeConnnection();
                     System.exit(0);
                 }
-                // quay lai giai dau neu troi trong giai dau
+                // quay lai giai dau neu choi trong giai dau
 
-                if (myMatch.getTournament() != null) {
-                    returnTournament();
-                }
+//                if (myMatch.getTournament() != null) {
+//                    returnTournament();
+//                }
                 
                 this.dispose();
                 break;
 
             }
         }
-    }
-
-    private void returnTournament() {
-
-        ObjectWrapper fun = null;
-        for (ObjectWrapper activeFun : myControl.getMyFuntion()) {
-            if (activeFun.getData() instanceof PlayInTournamentFrm) {
-                fun = activeFun;
-
-            }
-        }
-        if (fun != null) {
-            myControl.getMyFuntion().remove(fun);
-        }
-        PlayInTournamentFrm pitf = new PlayInTournamentFrm(myAccount, myControl, myMatch.getTournament());
-        pitf.setVisible(true);
-        this.dispose();
     }
 
     public void receiveDataProcessing(ObjectWrapper ow) {
@@ -128,9 +111,9 @@ public class GameFormClient extends GameForm {
                         myControl.sendData(new ObjectWrapper(ObjectWrapper.SEND2_RESULT_TO_SERVER, match2));
 
                         // quay lai giai dau
-                        if (myMatch.getTournament() != null) {
-                            returnTournament();
-                        }
+//                        if (myMatch.getTournament() != null) {
+//                            returnTournament();
+//                        }
                         this.dispose();
                         break;
                     }

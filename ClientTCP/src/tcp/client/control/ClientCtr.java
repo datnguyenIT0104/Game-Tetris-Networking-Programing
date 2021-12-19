@@ -25,10 +25,13 @@ import tcp.client.view.general.LoginFrm;
 import tcp.client.view.general.PlayerDetailsFrm;
 import tcp.client.view.ranking.RankingWOPlayerFrm;
 import tcp.client.view.general.RegisterFrm;
+import tcp.client.view.general.ViewReportFrm;
 import tcp.client.view.group.InvitationFrm;
 import tcp.client.view.group.PlayInGroupFrm;
 import tcp.client.view.match.ManageModeFrm;
 import tcp.client.view.ranking.RankingBTWinMatchFrm;
+import tcp.client.view.ranking.RankingByScoreInTournamentFrm;
+import tcp.client.view.ranking.SelectTournamentFrm;
 import tcp.client.view.tournament.PlayInTournamentFrm;
 
 /**
@@ -117,226 +120,263 @@ public class ClientCtr {
                     if (reData instanceof ObjectWrapper) {
                         ObjectWrapper data = (ObjectWrapper) reData;
 
-                        switch (data.getPerformative()) {
-                            case ObjectWrapper.SERVER_INFORM_CLIENT_ONLINE:
-                                // server gui danh sach nguoi dang online
-                                if (form instanceof HomeFrm) {
-                                    HomeFrm homeView = (HomeFrm) getForm();
-                                    homeView.setListUsersOnline((ArrayList<User>) data.getData());
-                                    homeView.fillRanking();
+                        if (form instanceof LoginFrm) {
+                            if (data.getPerformative() == ObjectWrapper.REPLY_LOGIN_USER) {
+                                LoginFrm loginView = (LoginFrm) form;
+                                loginView.receiveDataProcessing(data);
 
-                                } else {
+                            }
+                        } else {
+                            switch (data.getPerformative()) {
+                                case ObjectWrapper.SERVER_INFORM_CLIENT_ONLINE:
+                                    // server gui danh sach nguoi dang online
+                                    if (form instanceof HomeFrm) {
+                                        HomeFrm homeView = (HomeFrm) getForm();
+                                        homeView.setListUsersOnline((ArrayList<User>) data.getData());
+                                        homeView.fillRanking();
+
+                                    } else {
 //                                    LoginFrm loginView = (LoginFrm) getForm();
 //                                    loginView.setListUsersOnline((ArrayList<User>) data.getData());
-                                }
-                                break;
-                            case ObjectWrapper.REPLY_LOGIN_USER:
-                                if (form instanceof LoginFrm) {
-                                    LoginFrm loginView = (LoginFrm) form;
-                                    loginView.receiveDataProcessing(data);
+                                    }
+                                    break;
 
-                                }
-                                break;
-                            case ObjectWrapper.REPLY_RANKING:
-                                // server tra kq ranking
-                                ((HomeFrm) form).setListRankings((ArrayList<Ranking>) data.getData());
-                                ((HomeFrm) form).updateStatus();
+                                case ObjectWrapper.REPLY_RANKING:
+                                    // server tra kq ranking
+                                    ((HomeFrm) form).setListRankings((ArrayList<Ranking>) data.getData());
+                                    ((HomeFrm) form).updateStatus();
 
-                                break;
-                            case ObjectWrapper.REPLY_FRIEND_OF_USER:
-                                ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.REPLY_FRIEND_OF_USER:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
 
-                                break;
-                            case ObjectWrapper.REPLY_GROUP_JOINED:
-                                ((HomeFrm) form).setListGroupsJoined((ArrayList<Group>) data.getData());
-                                ((HomeFrm) form).fillGroupJoined();
+                                    break;
+                                case ObjectWrapper.REPLY_GROUP_JOINED:
+                                    ((HomeFrm) form).setListGroupsJoined((ArrayList<Group>) data.getData());
+                                    ((HomeFrm) form).fillGroupJoined();
 
-                                break;
-                            case ObjectWrapper.REPLY_UPDATE_GROUP_TO_ALL_CLIENT:
-                                if (form instanceof HomeFrm) {
-                                    ((HomeFrm) form).getGroupJoined();
-                                }
+                                    break;
+                                case ObjectWrapper.REPLY_UPDATE_GROUP_TO_ALL_CLIENT:
+                                    if (form instanceof HomeFrm) {
+                                        ((HomeFrm) form).getGroupJoined();
+                                    }
 
-                                break;
-                            case ObjectWrapper.SERVER_INFORM_LIST_REQUEST_FRIEND:
-                                ((HomeFrm) form).setListFriendRequest((ArrayList<User>) data.getData());
-                                ((HomeFrm) form).fillRequestFriend();
-                                break;
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_LIST_REQUEST_FRIEND:
+                                    ((HomeFrm) form).setListFriendRequest((ArrayList<User>) data.getData());
+                                    ((HomeFrm) form).fillRequestFriend();
+                                    break;
 
-                            case ObjectWrapper.REPLY_GET_LIST_REQUEST_FRIEND:
-                                ((HomeFrm) form).setListFriendRequest((ArrayList<User>) data.getData());
-                                ((HomeFrm) form).fillRequestFriend();
-                                break;
-                            case ObjectWrapper.REPLY_ACCEPT_REQUEST_FRIEND:
-                                ((HomeFrm) form).receiveDataProcessing(data);
+                                case ObjectWrapper.REPLY_GET_LIST_REQUEST_FRIEND:
+                                    ((HomeFrm) form).setListFriendRequest((ArrayList<User>) data.getData());
+                                    ((HomeFrm) form).fillRequestFriend();
+                                    break;
+                                case ObjectWrapper.REPLY_ACCEPT_REQUEST_FRIEND:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
 
-                                break;
-                            case ObjectWrapper.REPLY_REMOVE_REQUEST_FRIEND:
-                                ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.REPLY_REMOVE_REQUEST_FRIEND:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
 
-                                break;
-                            case ObjectWrapper.REPLY_REJECT_REQUEST_FRIEND:
-                                ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.REPLY_REJECT_REQUEST_FRIEND:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
 
-                                break;
-                            case ObjectWrapper.REPLY_UNFRIEND:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                break;
-                            case ObjectWrapper.SERVER_INFORM_UNFRIEND:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                break;
-                            case ObjectWrapper.SERVER_SEND_CHALLENGE_COMMUNICATE:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                break;
-                            case ObjectWrapper.FREE_WAITING:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                break;
-                            case ObjectWrapper.SERVER_SEND_ACCEPT_CHALLENGE_COMMUNICATE:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                break;
-                            case ObjectWrapper.SERVER_INFORM_RESULT_MATCH:
-                                removeGameFormInFuntionActive();
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                break;
-                            case ObjectWrapper.SERVER_INFORM_ALL_UPDATE_RANK:
+                                    break;
+                                case ObjectWrapper.REPLY_UNFRIEND:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_UNFRIEND:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.SERVER_SEND_CHALLENGE_COMMUNICATE:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.FREE_WAITING:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.SERVER_SEND_ACCEPT_CHALLENGE_COMMUNICATE:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_RESULT_MATCH:
+                                    removeGameFormInFuntionActive();
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_ALL_UPDATE_RANK:
 
-                                sendData(new ObjectWrapper(ObjectWrapper.RANKING, "winrate"));
+                                    sendData(new ObjectWrapper(ObjectWrapper.RANKING, "winrate"));
 //                                ((HomeFrm) form).updateStatus();
-                                break;
-                            case ObjectWrapper.REPLY_LEAVE_GROUP:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                
-                                break;
-                            case ObjectWrapper.SERVER_INFORM_UPDATE_GROUP:
-                                 ((HomeFrm) form).receiveDataProcessing(data);
-                                 
-                                break;      
-                            case ObjectWrapper.REPLY_GET_INFO_OF_PLAYER_IN_GROUP:
-                                if(((HomeFrm) form).getPlayInGroupFrm() != null){
-                                    ( ((HomeFrm) form).getPlayInGroupFrm()).receiveDataProcessing(data);
-                                }
+                                    break;
+                                case ObjectWrapper.REPLY_LEAVE_GROUP:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
 
-                                break;
-                            case ObjectWrapper.SERVER_INFORM_MESSAGE_OF_GROUP:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                 
-                                break;
-                            case ObjectWrapper.REPLY_GET_MESSAGE_OF_GROUP:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                 
-                                break;
-                            case ObjectWrapper.REPLY_SEND_INVITATION_GROUP:
-                                ( ((HomeFrm) form).getPlayInGroupFrm()).receiveDataProcessing(data);
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_UPDATE_GROUP:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
 
-                                break;
-                            case ObjectWrapper.REPLY_JOIN_GROUP_BY_INVITATION:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                
-                                break;
-                            case ObjectWrapper.FRIEND_SEND_MESSAGE:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                
-                                break;
-                            case ObjectWrapper.REPLY_KICK_OUT_GROUP:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                
-                                break;
-                            case ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                
-                                break;
-                            case ObjectWrapper.STATUS_OF_ENEMY:
-                                ((HomeFrm) form).receiveDataProcessing(data);
-                                
-                                break;
-                        }
+                                    break;
+                                case ObjectWrapper.REPLY_GET_INFO_OF_PLAYER_IN_GROUP:
+                                    if (((HomeFrm) form).getPlayInGroupFrm() != null) {
+                                        (((HomeFrm) form).getPlayInGroupFrm()).receiveDataProcessing(data);
+                                    }
 
-                        for (ObjectWrapper funtionActive : myFuntion) {
-                            if (funtionActive.getPerformative() == data.getPerformative()) {
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_MESSAGE_OF_GROUP:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_GET_MESSAGE_OF_GROUP:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_SEND_INVITATION_GROUP:
+                                    (((HomeFrm) form).getPlayInGroupFrm()).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_JOIN_GROUP_BY_INVITATION:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.FRIEND_SEND_MESSAGE:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_KICK_OUT_GROUP:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.STATUS_OF_ENEMY:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_SEND_REPORT_TO_SERVER:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.REPLY_BAN_PLAYER:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.SERVER_INFORM_CLIENT_UPDATE_INFOR_FRIEND:
+                                    ((HomeFrm) form).getInforFriend();
+                                    break;
+                                case ObjectWrapper.REPLY_UNBAN_PLAYER:
+                                    ((HomeFrm) form).receiveDataProcessing(data);
+
+                                    break;
+                                case ObjectWrapper.BANNED_BY_MANAGE:
+                                    JOptionPane.showMessageDialog(form, "You have banned by manager!");
+//                                    closeConnnection();
+                                    ((HomeFrm)form).lockORUnLock(false);
+                                    break;
+                                case ObjectWrapper.UNBANNED_BY_MANAGE:
+                                    JOptionPane.showMessageDialog(form, "You can play this game");
+//                                    closeConnnection();
+                                    ((HomeFrm)form).lockORUnLock(true);
+                            }
+
+                            for (ObjectWrapper funtionActive : myFuntion) {
+                                if (funtionActive.getPerformative() == data.getPerformative()) {
 //                                    
-                                switch (data.getPerformative()) {
-                                    case ObjectWrapper.REPLY_REGISTER_ACCOUNT:
-                                        RegisterFrm rV = (RegisterFrm) funtionActive.getData();
-                                        rV.receiveDataProcessing(data);
+                                    switch (data.getPerformative()) {
+                                        case ObjectWrapper.REPLY_REGISTER_ACCOUNT:
+                                            RegisterFrm rV = (RegisterFrm) funtionActive.getData();
+                                            rV.receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_CREATE_GROUP:
-                                        CreateGroupFrm createGrF = (CreateGroupFrm) funtionActive.getData();
-                                        createGrF.receiveDataProcessing(data);
+                                            break;
+                                        case ObjectWrapper.REPLY_CREATE_GROUP:
+                                            CreateGroupFrm createGrF = (CreateGroupFrm) funtionActive.getData();
+                                            createGrF.receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_JOIN_GROUP:
-                                        JoinGroupFrm jgf = (JoinGroupFrm) funtionActive.getData();
-                                        jgf.receiveDataProcessing(data);
+                                            break;
+                                        case ObjectWrapper.REPLY_JOIN_GROUP:
+                                            JoinGroupFrm jgf = (JoinGroupFrm) funtionActive.getData();
+                                            jgf.receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_REQUEST_FRIEND:
-                                        PlayerDetailsFrm playerDF = (PlayerDetailsFrm) funtionActive.getData();
-                                        playerDF.receiveDataProcessing(data);
+                                            break;
+                                        case ObjectWrapper.REPLY_REQUEST_FRIEND:
+                                            PlayerDetailsFrm playerDF = (PlayerDetailsFrm) funtionActive.getData();
+                                            playerDF.receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_CREATE_TOURNAMENT:
-                                        ((CreateTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                            break;
+                                        case ObjectWrapper.REPLY_CREATE_TOURNAMENT:
+                                            ((CreateTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_GET_TOURNAMENT:
-                                        JoinTournamentFrm jtf = (JoinTournamentFrm) funtionActive.getData();
-                                        jtf.receiveDataProcessing(data);
-                                        removeJoinTournamentFrm();
-                                        
-                                        break;
-                                    case ObjectWrapper.REPLY_JOIN_TO_THE_TOURNAMENT:
-                                        ((JoinTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
-                                        removeJoinTournamentFrm();
-                                        
-                                        break;
-                                    case ObjectWrapper.REPLY_GET_MODE:
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_TOURNAMENT:
+                                            JoinTournamentFrm jtf = (JoinTournamentFrm) funtionActive.getData();
+                                            jtf.receiveDataProcessing(data);
+                                            removeJoinTournamentFrm();
+
+                                            break;
+                                        case ObjectWrapper.REPLY_JOIN_TO_THE_TOURNAMENT:
+                                            ((JoinTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                            removeJoinTournamentFrm();
+
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_MODE:
 //                                        removeChallengeFrm();
 //                                        System.out.println("Mode");
-                                        ((ChallengeFrm) funtionActive.getData()).receiveDataProcessing(data);
-                                        
-                                        break;
-                                    case ObjectWrapper.REPLY_CHALLENGE_COMMUNICATE:
+                                            ((ChallengeFrm) funtionActive.getData()).receiveDataProcessing(data);
 
-                                        ((ChallengeFrm) funtionActive.getData()).receiveDataProcessing(data);
-                                        break;
-                                    case ObjectWrapper.SEND_INFO_TO_CLIENT:
+                                            break;
+                                        case ObjectWrapper.REPLY_CHALLENGE_COMMUNICATE:
+
+                                            ((ChallengeFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                            break;
+                                        case ObjectWrapper.SEND_INFO_TO_CLIENT:
 //                                        ((GameForm) funtionActive.getData()).receiveDataProcessing(data);
-                                        ((GameFormClient) funtionActive.getData()).receiveDataProcessing(data);
+                                            ((GameFormClient) funtionActive.getData()).receiveDataProcessing(data);
 
-                                        break;
+                                            break;
 
-                                    case ObjectWrapper.REPLY_RANKING_WITH_OTHER_PLAYER:
-                                        ((RankingWOPlayerFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                        case ObjectWrapper.REPLY_RANKING_WITH_OTHER_PLAYER:
+                                            ((RankingWOPlayerFrm) funtionActive.getData()).receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_RANKING_BY_TOTAL_WIN_MATCH:
-                                        ((RankingBTWinMatchFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                            break;
+                                        case ObjectWrapper.REPLY_RANKING_BY_TOTAL_WIN_MATCH:
+                                            ((RankingBTWinMatchFrm) funtionActive.getData()).receiveDataProcessing(data);
 
-                                        break;
-                                    case ObjectWrapper.REPLY_GET_LIST_USER_ONLINE:
-                                        ((PlayInTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
-                                        removePlayInTournamentFrm();
-                                        
-                                        break;
-                                    case ObjectWrapper.REPLY_GET_INFO_OF_PLAYER_IN_TOURNAMENT:
-                                        ((PlayInTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
-                                        removePlayInTournamentFrm();
-                                        
-                                        break;
-                                    case ObjectWrapper.REPLY_GET_INVITATION_FROM_SERVER:
-                                        ((InvitationFrm)funtionActive.getData()).receiveDataProcessing(data);
-                                        
-                                        break;
-                                    case ObjectWrapper.REPLY_ACCESS_MODE:
-                                        ((ManageModeFrm) funtionActive.getData()).receiveDataProcessing(data);
-                                        
-                                        break;
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_LIST_USER_ONLINE:
+                                            ((PlayInTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                            removePlayInTournamentFrm();
+
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_INFO_OF_PLAYER_IN_TOURNAMENT:
+                                            ((PlayInTournamentFrm) funtionActive.getData()).receiveDataProcessing(data);
+                                            removePlayInTournamentFrm();
+
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_INVITATION_FROM_SERVER:
+                                            ((InvitationFrm) funtionActive.getData()).receiveDataProcessing(data);
+
+                                            break;
+                                        case ObjectWrapper.REPLY_ACCESS_MODE:
+                                            ((ManageModeFrm) funtionActive.getData()).receiveDataProcessing(data);
+
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_ALL_REPORT:
+                                            ((ViewReportFrm) funtionActive.getData()).receiveDataProcessing(data);
+
+                                            break;
+                                        case ObjectWrapper.REPLY_GET_ALL_TOURNAMENT:
+                                            ((SelectTournamentFrm)funtionActive.getData()).receiveDataProcessing(data);
+                                            
+                                            break;
+                                        case ObjectWrapper.REPLY_RANKING_BY_SCORE_IN_TOURNAMEN:
+                                            ((RankingByScoreInTournamentFrm)funtionActive.getData()).receiveDataProcessing(data);
+                                            
+                                            break;
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
-
                     }
                 }
             } catch (Exception e) {
@@ -361,17 +401,19 @@ public class ClientCtr {
 //            }
         }
     }
-    public void removeChallengeFrm(){
+
+    public void removeChallengeFrm() {
         for (int i = 0; i < myFuntion.size(); i++) {
             JFrame form = (JFrame) myFuntion.get(i).getData();
-            
-            if( form instanceof ChallengeFrm){
+
+            if (form instanceof ChallengeFrm) {
                 myFuntion.remove(i);
                 break;
             }
         }
     }
-    public void removeJoinTournamentFrm(){
+
+    public void removeJoinTournamentFrm() {
         for (int i = 0; i < myFuntion.size(); i++) {
             JFrame form = (JFrame) myFuntion.get(i).getData();
 
@@ -381,7 +423,8 @@ public class ClientCtr {
             }
         }
     }
-    public void removePlayInTournamentFrm(){
+
+    public void removePlayInTournamentFrm() {
         for (int i = 0; i < myFuntion.size(); i++) {
             JFrame form = (JFrame) myFuntion.get(i).getData();
 
@@ -391,6 +434,7 @@ public class ClientCtr {
             }
         }
     }
+
     public JFrame getForm() {
         return form;
     }

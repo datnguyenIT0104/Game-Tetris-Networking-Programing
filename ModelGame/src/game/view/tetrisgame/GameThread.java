@@ -146,9 +146,9 @@ public class GameThread extends Thread{
         pause = gte.getPause();
         index = gte.getIndex();
         // gamearea
-        gameArea.spawnBlock(index, 1);
+        gameArea.spawnBlock(0, 1);
         gameArea.restoreGame(gte.getGae());
-        
+//        gameArea.refreshGame();
         // cap nhat thong tin
         
         gf.updateScore(score, distance + distanceTemp);

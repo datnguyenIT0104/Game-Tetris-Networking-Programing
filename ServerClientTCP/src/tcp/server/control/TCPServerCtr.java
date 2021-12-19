@@ -49,7 +49,8 @@ public class TCPServerCtr {
     private ArrayList<Group> listGroup;
     private ArrayList<Group> listInvitation;
     private ArrayList<GameForm> listPlaying;
-
+    private ArrayList<User> listReport;
+    
     private IPAddress myAddress = new IPAddress("localhost", 2222);
     private IPAddress myAddressUDP = new IPAddress("localhost", 2223);
     private IPAddress serverAddress = new IPAddress("localhost", 5555);
@@ -62,7 +63,8 @@ public class TCPServerCtr {
         listGroup = new ArrayList<>();
         listInvitation = new ArrayList<>();
         listPlaying = new ArrayList<>();
-
+        listReport = new ArrayList<>();
+        
         openConnect();
     }
 
@@ -75,7 +77,8 @@ public class TCPServerCtr {
         listGroup = new ArrayList<>();
         listInvitation = new ArrayList<>();
         listPlaying = new ArrayList<>();
-
+        listReport = new ArrayList<>();
+        
         openConnect();
     }
 
@@ -181,6 +184,12 @@ public class TCPServerCtr {
             myProcessing.sendData(ow);
         }
     }
+    public void publicUpdateInforFriend(){
+        ObjectWrapper ow = new ObjectWrapper(ObjectWrapper.SERVER_INFORM_CLIENT_UPDATE_INFOR_FRIEND, "ok");
+        for (ServerProcessing myProcessing : listProcessing) {
+            myProcessing.sendData(ow);
+        }
+    }
 
     public void publicGroup(User u) {
         ObjectWrapper ow = new ObjectWrapper(ObjectWrapper.REPLY_UPDATE_GROUP_TO_ALL_CLIENT, "UpdateGroupToAll");
@@ -231,7 +240,7 @@ public class TCPServerCtr {
     public void publicSendCommunicate(ObjectWrapper ow, User userReceive) {// gui thong diep den nguoi choi khac
 
         for (ServerProcessing sp : listProcessing) {
-            if (sp.getUserOfPro().getId() == userReceive.getId()) {
+            if ( sp.getUserOfPro() != null && sp.getUserOfPro().getId() == userReceive.getId()) {
                 sp.sendData(ow);
                 return;
             }
@@ -386,10 +395,14 @@ public class TCPServerCtr {
                                 dataReceiveUDP = receiveDataUDP();
 
                                 if (dataReceiveUDP.getData() instanceof User) {
-                                    listUsersOnline.add((User) dataReceiveUDP.getData());
-                                    setUserOfPro((User) dataReceiveUDP.getData());
+                                    if( ((User)dataReceiveUDP.getData()).isIsBanned() ){
+                                        dataReceiveUDP.setData("false");
+                                    }else{
+                                        listUsersOnline.add((User) dataReceiveUDP.getData());
+                                        setUserOfPro((User) dataReceiveUDP.getData());
+                                        
+                                    }
                                     oos.writeObject(dataReceiveUDP);
-
                                     // gui danh sach useronline
                                     publicUserOnline();
                                 } else {
@@ -815,6 +828,52 @@ public class TCPServerCtr {
                                             "no"));
                                 }
                                 break;
+                            case ObjectWrapper.SEND_REPORT_TO_SERVER:
+                                if( addReport((User) data.getData()))
+                                    oos.writeObject(new ObjectWrapper(ObjectWrapper.REPLY_SEND_REPORT_TO_SERVER, "ok"));
+                                else
+                                    oos.writeObject(new ObjectWrapper(ObjectWrapper.REPLY_SEND_REPORT_TO_SERVER, "false"));
+                                break;
+                            case ObjectWrapper.GET_ALL_REPORT:
+                                oos.writeObject(new ObjectWrapper(ObjectWrapper.REPLY_GET_ALL_REPORT, listReport));
+                                
+                                break;
+                            case ObjectWrapper.BAN_PLAYER:
+                                sendDataUDP(data);
+
+                                oos.writeObject(receiveDataUDP());
+                                Thread.sleep(100);
+                                publicSendCommunicate(new ObjectWrapper(ObjectWrapper.BANNED_BY_MANAGE, "closeYourGame"),
+                                        (User) data.getData());
+                                
+                                Thread.sleep(100);
+                                publicRankingNew();
+                                Thread.sleep(100);
+                                publicUpdateInforFriend();
+                                
+                                break;
+                            case ObjectWrapper.UNBAN_PLAYER:
+                                sendDataUDP(data);
+
+                                oos.writeObject(receiveDataUDP());
+                                Thread.sleep(100);
+                                publicSendCommunicate(new ObjectWrapper(ObjectWrapper.UNBANNED_BY_MANAGE, "closeYourGame"),
+                                        (User) data.getData());
+                                Thread.sleep(100);
+                                publicRankingNew();
+                                Thread.sleep(100);
+                                publicUpdateInforFriend();
+                                break;
+                            case ObjectWrapper.GET_ALL_TOURNAMENT:
+                                sendDataUDP(data);
+                                
+                                oos.writeObject(receiveDataUDP());
+                                break;
+                            case ObjectWrapper.RANKING_BY_SCORE_IN_TOURNAMENT:
+                                sendDataUDP(data);
+                                
+                                oos.writeObject(receiveDataUDP());
+                                break;
                         }
                         oos.flush();
                     }
@@ -827,7 +886,7 @@ public class TCPServerCtr {
                 User u = null;
 
                 for (User item : listUsersOnline) {
-                    if (item.getId() == userOfPro.getId()) {
+                    if (userOfPro != null && item.getId() == userOfPro.getId()) {
                         u = item;
                         break;
                     }
@@ -846,7 +905,23 @@ public class TCPServerCtr {
                 e.printStackTrace();
             }
         }
-
+        public boolean addReport(User user){
+            boolean isExist = false;
+            for (User item : listReport) {
+                if( item.getId() == user.getId()){
+                    if( item.getListFriend().get(0).getId() == user.getListFriend().get(0).getId()){
+                        isExist = true;
+                        break;
+                    }
+                }
+            }
+            if( !isExist){
+                
+                listReport.add(user);
+                return true;
+            }else
+                return false;
+        }
         public void informStatusOfEnemy(Match myMatch, String msg) {
             // thong bao doi thu vua thoat game
             for (Result result : myMatch.getListResult()) {

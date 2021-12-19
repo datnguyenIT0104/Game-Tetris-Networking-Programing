@@ -134,6 +134,62 @@ public class TournamentDAO extends DAO{
         
         return result;
     }
-    
+    public ArrayList<Tournament> getAllTournaments(){
+        ArrayList<Tournament> result = new ArrayList<>();
+        
+        String sql = "SELECT a.id as idTo, a.name as nameTo, a.endDate, c.id, c.username, c.name" +
+"                     FROM tbltournamentuser as b, tbltournament as a, tbluser as c" +
+"                     WHERE b.idTblTournament = a.id" +
+"                       AND c.id = b.idTblUser;";
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                
+                boolean isExist = false;
+                for (int i = 0; i < result.size(); i++) {
+                    Tournament t = result.get(i);
+                    if( t.getId() == rs.getInt(1)){
+                        isExist = true;
+                        User user = new User();
+                        user.setId(rs.getInt("id"));
+                        user.setUsername(rs.getString("username"));
+                        user.setName(rs.getString("name"));
+                        
+                        TournamentUser tu = new TournamentUser();
+                        tu.setUser(user);
+                        
+                        result.get(i).getListTournamentUsers().add(tu);
+                        break;
+                    }
+                }
+                if( !isExist){
+                    Tournament t = new Tournament();
+                    t.setId(rs.getInt("idTO"));
+                    t.setName(rs.getString("nameTo"));
+                    t.setEndDate( rs.getDate("endDate"));
+                    // dong goi thuoc tinh nguoi choi
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setName(rs.getString("name"));
+                    
+                    TournamentUser tu = new TournamentUser();
+                    tu.setUser(user);
+                    
+                    t.getListTournamentUsers().add(tu);
+                    result.add(t);
+                    
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
     
 }
