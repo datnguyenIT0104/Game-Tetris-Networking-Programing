@@ -212,7 +212,7 @@ public class PlayerDetailsFrm extends JFrame {
             btnUnban.setVisible(false);
             btnBan.setVisible(false);
         } else {
-            if (rank.isIsBanned()) {
+            if (friend.isIsBanned()) {
                 btnUnban.setEnabled(true);
                 btnUnban.setVisible(true);
                 btnBan.setVisible(false);
