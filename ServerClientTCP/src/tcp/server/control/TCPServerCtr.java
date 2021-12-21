@@ -823,6 +823,7 @@ public class TCPServerCtr {
                                     }
                                     sHomeF.fillList(listPlaying);
                                     informStatusOfEnemy(myMatch, "Your opponent is back!");
+//                                    publicUserOnline();
                                 } else {
                                     oos.writeObject(new ObjectWrapper(ObjectWrapper.REPLY_CHECK_OUT_GAME_BEFORE,
                                             "no"));
